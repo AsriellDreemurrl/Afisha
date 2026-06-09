@@ -2,12 +2,15 @@ import { useState } from 'react'
 
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-
-    </>
+    <BrowserRouter>
+      <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/editor" element={<Editor />} />
+          <Route path="/post/:id" element={<Post />} />
+        </Routes>
+    </BrowserRouter>
   )
 }
 
