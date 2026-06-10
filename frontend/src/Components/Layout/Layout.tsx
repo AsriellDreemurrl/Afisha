@@ -1,6 +1,7 @@
 import './Layout.css'
+import type { ReactNode } from 'react'
 
-function Layout({ children }) {
+function Layout({ children }: { children: ReactNode}) {
   return (
     <div className="layout">
         {children}
