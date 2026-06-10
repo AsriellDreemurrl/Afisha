@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     watch: {
-      usePolling: false,
-      interval: 100
+      usePolling: true,
+      interval: 100,
     }
   }
 })
