@@ -7,7 +7,6 @@ import Post from './pages/Post/Post'
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/editor" element={<Editor />} />
