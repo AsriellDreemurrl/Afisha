@@ -1,77 +1,49 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import type { Event } from "../../types/Event"
-
-export default function Editor() {
-  const navigate = useNavigate()
-
-  const [title, setTitle] = useState("")
-  const [place, setPlace] = useState("")
-  const [date, setDate] = useState("")
-  const [price, setPrice] = useState("")
-
-  const [image, setImage] = useState(
-    "https://img.freepik.com/premium-vector/rock-night-neon-sign-style-text-vector_118419-809.jpg"
-  )
-
-  function saveEvent() {
-    const newEvent: Event = {
-      id: crypto.randomUUID(),
-      title,
-      place,
-      date,
-      price,
-      image
-    }
-
-    const saved: Event[] = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    )
-
-    localStorage.setItem(
-      "events",
-      JSON.stringify([...saved, newEvent])
-    )
-
-    navigate("/")
-  }
-
+// Editor.jsx
+import style from "./Editor.module.css"
+function Editor() {
   return (
-    <div>
-      <input placeholder="Название" onChange={(e) => setTitle(e.target.value)} />
-      <input placeholder="Место" onChange={(e) => setPlace(e.target.value)} />
-      <input placeholder="Дата" onChange={(e) => setDate(e.target.value)} />
-      <input placeholder="Цена" onChange={(e) => setPrice(e.target.value)} />
+    <div className={style.container}>
+      <h1 className={style.name}>Новое событие</h1>
+      <label htmlFor="title" className={style.label}>Название</label>
+      <input type="text" className={style.title} id="title" />
+      <label htmlFor="desc" className={style.label}>Описание</label>
+      <textarea className={style.description} id="desc" />
+      <div className={style.aboutinp_wrapper}>
+        <div className={style.input_group}>
+          <label htmlFor="date" className={style.label}>Дата и время</label>
+          <input type="datetime-local" className={style.aboutinp} id="date" />
+        </div>
+        <div className={style.input_group}>
+          <label htmlFor="place" className={style.label}>Место</label>
+          <input type="text" className={style.aboutinp} id="place" />
+        </div>
+      </div>
+      <div className={style.aboutinp_wrapper}>
+        <div className={style.input_group}>
+          <label htmlFor="cat" className={style.label}>Категория</label>
+          <select className={style.aboutinp} id="cat"  >
+            <option value="" disabled selected hidden>Выберите</option> 
+            <option value="Концерт">Концерт</option>
+            <option value="Лекция">Лекция</option>
+            <option value="Спорт">Спорт</option>
+            
+            </select>
+        </div>
+        <div className={style.input_group}>
+          <label htmlFor="price" className={style.label}>Цена</label>
+          <input type="text" className={style.aboutinp} id="price" />
+        </div>
+      </div>
+        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+        <input type="url" className={style.photo} id="photo" />
+      <div className={style.btnwrapper}>
+        <button className={style.btn}>Сохранить</button>
+        <button className={style.btn}>Отмена</button>
+      </div>
 
-      <input
-        placeholder="Ссылка на картинку"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
-      />
-
-      <button onClick={saveEvent}>Сохранить</button>
+      
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Editor.jsx
-// function Editor() {
-//   return <div>Editor</div>
-// }
 
 // export default Editor
