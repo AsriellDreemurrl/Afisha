@@ -1,12 +1,9 @@
-import './Layout.css'
-import type { ReactNode } from 'react'
+import { Outlet } from "react-router-dom"
 
-function Layout({ children }: { children: ReactNode}) {
+export default function Layout() {
   return (
-    <div className="layout">
-        {children}
+    <div>
+      <Outlet />
     </div>
   )
 }
-
-export default Layout

@@ -1,22 +1,18 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout/Layout'
-import Home from './pages/Home/Home'
-import Editor from './pages/Editor/Editor'
-import Post from './pages/Post/Post'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
+import Layout from "./Components/Layout/Layout"
+import Home from "./pages/Home/Home"
+import Editor from "./pages/Editor/Editor"
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/editor" element={<Editor />} />
-            <Route path="/post/:id" element={<Post />} />
-          </Routes>
-        </Layout>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="editor" element={<Editor />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   )
 }
-
-export default App
