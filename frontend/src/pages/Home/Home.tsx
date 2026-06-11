@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-import Header from "../../Components/Header/Header"
-import EventList from "../../Components/EventList/EventList"
+import Header from "../../components/Header/Header"
+import EventList from "../../components/EventList/EventList"
 import type { Event } from "../../types/Event"
 import "./Home.css"
 
