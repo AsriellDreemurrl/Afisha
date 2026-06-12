@@ -1,14 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
 import { AfishaEvent, events } from './events.store';
 
 @Injectable()
 export class EventsService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
-  }
-
   findAll(): AfishaEvent[] {
     return events;
   }
@@ -17,11 +11,22 @@ export class EventsService {
     return events.find(event => event.id === id);
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  create(event: AfishaEvent): AfishaEvent {
+    events.push(event);
+    return event;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  update(id: number, updated: AfishaEvent): AfishaEvent | undefined {
+    const index = events.findIndex(event => event.id === id)
+    if (index === -1) return undefined;
+    events[index] = updated;
+    return events[index];
+  }
+
+  remove(id: number):boolean {
+    const index = events.findIndex(events => events.id === id);
+    if (index === -1) return false;
+    events.splice(index, 1);
+    return true;
   }
 }
