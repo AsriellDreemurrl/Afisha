@@ -5,6 +5,4 @@ cd backend
 npm install
 cd ../frontend
 npm install
-npm install react-router-dom
-npm install clsx
 ```
