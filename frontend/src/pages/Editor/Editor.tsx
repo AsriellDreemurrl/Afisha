@@ -1,8 +1,12 @@
 // Editor.jsx
-import { useState } from "react";
+import { useState, type SetStateAction } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import style from "./Editor.module.css"
+import { registerLocale } from 'react-datepicker';
+import { ru } from 'date-fns/locale';
+
+registerLocale('ru', ru);
 
 function Editor() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -18,8 +22,9 @@ function Editor() {
         <div className={style.input_group}>
           <label htmlFor="date" className={style.label}>Дата и время</label>
           <DatePicker
+            locale="ru"
             selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            onChange={(date: SetStateAction<Date | null>) => setSelectedDate(date)}
             showTimeSelect
             dateFormat="Pp"
           />
