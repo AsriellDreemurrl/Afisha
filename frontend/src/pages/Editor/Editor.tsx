@@ -1,6 +1,16 @@
 // Editor.jsx
+import { useState, type SetStateAction } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import style from "./Editor.module.css"
+import { registerLocale } from 'react-datepicker';
+import { ru } from 'date-fns/locale';
+
+registerLocale('ru', ru);
+
 function Editor() {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   return (
     <div className={style.container}>
       <h1 className={style.name}>Новое событие</h1>
@@ -11,7 +21,13 @@ function Editor() {
       <div className={style.aboutinp_wrapper}>
         <div className={style.input_group}>
           <label htmlFor="date" className={style.label}>Дата и время</label>
-          <input type="datetime-local" className={style.aboutinp} id="date" />
+          <DatePicker
+            locale="ru"
+            selected={selectedDate}
+            onChange={(date: SetStateAction<Date | null>) => setSelectedDate(date)}
+            showTimeSelect
+            dateFormat="Pp"
+          />
         </div>
         <div className={style.input_group}>
           <label htmlFor="place" className={style.label}>Место</label>
@@ -21,27 +37,24 @@ function Editor() {
       <div className={style.aboutinp_wrapper}>
         <div className={style.input_group}>
           <label htmlFor="cat" className={style.label}>Категория</label>
-          <select className={style.aboutinp} id="cat"  >
-            <option value="" disabled selected hidden>Выберите</option> 
+          <select className={style.aboutinp} id="cat">
+            <option value="" disabled selected hidden>Выберите</option>
             <option value="Концерт">Концерт</option>
             <option value="Лекция">Лекция</option>
             <option value="Спорт">Спорт</option>
-            
-            </select>
+          </select>
         </div>
         <div className={style.input_group}>
           <label htmlFor="price" className={style.label}>Цена</label>
           <input type="text" className={style.aboutinp} id="price" />
         </div>
       </div>
-        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input type="url" className={style.photo} id="photo" />
+      <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+      <input type="url" className={style.photo} id="photo" />
       <div className={style.btnwrapper}>
         <button className={style.btn}>Сохранить</button>
         <button className={style.btn}>Отмена</button>
       </div>
-
-      
     </div>
   )
 }
