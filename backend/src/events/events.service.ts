@@ -3,11 +3,11 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 
+import { eventsStore } from './events.store';
+
 @Injectable()
 export class EventService {
-  private events: Event[] = [];
-
-  create(createEventDto: CreateEventDto): Event {
+   create(createEventDto: CreateEventDto): Event {
     const newEvent = new Event();
 
     newEvent.id = Date.now().toString();
@@ -20,37 +20,41 @@ export class EventService {
     newEvent.price = createEventDto.price;
     newEvent.photo = createEventDto.photo;
 
-    this.events.push(newEvent);
+
+    eventsStore.push(newEvent);
     return newEvent;
   }
 
   findAll(): Event[] {
-    return this.events;
+    return eventsStore;
   }
 
-  findOne(id: string):Event {
-    const foundEvent = this.events.find((event) => event.id === id);
-    if(!foundEvent){
-      throw new NotFoundException(`событие не найдено`)
+  findOne(id: string): Event {
+    const foundEvent = eventsStore.find((event) => event.id === id);
+    if (!foundEvent) {
+      throw new NotFoundException(`событие не найдено`);
     }
     return foundEvent;
   }
 
   update(id: string, updateEventDto: UpdateEventDto): Event {
-    const eventToUpdate=this.findOne(id);
-    Object.assign(eventToUpdate,updateEventDto);
+    const eventToUpdate = this.findOne(id);
+    Object.assign(eventToUpdate, updateEventDto);
 
-    if(updateEventDto.price!==undefined){
-      eventToUpdate.price=Number(updateEventDto.price);
+    if (updateEventDto.price !== undefined) {
+      eventToUpdate.price = Number(updateEventDto.price);
     }
+  
     return eventToUpdate;
   }
 
   remove(id: string): string {
-  this.findOne(id);
-  this.events=this.events.filter((event)=>event.id !==id);
-  return `событие удалено `
+    this.findOne(id);
+    const index = eventsStore.findIndex((event) => event.id === id);
+    if (index !== -1) {
+      eventsStore.splice(index, 1);
+    }
+    
+    return `событие удалено `;
   }
 }
-
-
