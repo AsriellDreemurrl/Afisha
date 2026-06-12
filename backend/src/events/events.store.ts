@@ -1,6 +1,6 @@
 export type Category = 'Концерт' | 'Выставка' | 'Спорт' | 'Лекция' | 'Другое';
 
-export interface Event {
+export interface AfishaEvent {
     id: number;
     name: string;
     description: string;
@@ -11,7 +11,7 @@ export interface Event {
     photo: string;
 }
 
-export const events: Event[] = [
+export const events: AfishaEvent[] = [
     {
         id: 1,
         name: "Rock night",
