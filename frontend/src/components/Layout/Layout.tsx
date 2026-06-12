@@ -1,4 +1,4 @@
-import './Layout.css'
+import './Layout.module.css'
 import type { ReactNode } from 'react'
 
 function Layout({ children }: { children: ReactNode}) {

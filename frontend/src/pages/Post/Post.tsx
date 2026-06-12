@@ -1,4 +1,5 @@
 // Post.jsx
+<<<<<<< HEAD
 import type { JSX } from 'react/jsx-runtime'
 import styles from './Post.module.css'
 import clsx from 'clsx'
@@ -59,6 +60,10 @@ export const Post = ({ image, category, description, date, location, price }: Po
       </div>
     </div>
   )
+=======
+function Post() {
+  return <div>Post</div>
+>>>>>>> ae33de8a74de8538e11d3b87adc6b76389dc5d34
 }
 
 export default Post
