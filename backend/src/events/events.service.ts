@@ -12,13 +12,13 @@ export class EventService {
 
     newEvent.id = Date.now().toString();
 
-    newEvent.title = createEventDto.title;
+    newEvent.name = createEventDto.name;
     newEvent.description = createEventDto.description;
-    newEvent.date = createEventDto.date;
-    newEvent.place = createEventDto.place;
+    newEvent.datetime = createEventDto.datetime;
+    newEvent.location = createEventDto.location;
     newEvent.category = createEventDto.category;
     newEvent.price = createEventDto.price;
-    newEvent.images = createEventDto.images;
+    newEvent.photo = createEventDto.photo;
 
     this.events.push(newEvent);
     return newEvent;

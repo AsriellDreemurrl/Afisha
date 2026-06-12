@@ -1,10 +1,10 @@
 export class CreateEventDto {
-    title!:string;
+    name!:string;
     description!:string;
-    date!:string;
-    place!:string;
+    datetime!:string;
+    location!:string;
     category!:string;
     price!:number;
-    images!:string;
+    photo!:string;
 }
 
