@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout/Layout'
 import Home from './pages/Home/Home'
 import Editor from './pages/Editor/Editor'
-import  Post  from './pages/Post/Post'
+import Post  from './pages/Post/Post'
 
 
 function App() {
