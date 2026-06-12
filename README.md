@@ -6,3 +6,4 @@ npm install
 cd ../frontend
 npm install
 ```
+также рекоммендую сделать `npm install typescript@latest --save-dev` раз, если у вас ошибки в package.json
