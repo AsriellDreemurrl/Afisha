@@ -1,24 +1,20 @@
 import EventCard from "../EventCard/EventCard"
-import type { Event } from "../../types/Event"
+import type { AfishaEvent } from "../../../../backend/src/events/events.store"
 import "./EventList.css"
 
 type Props = {
-  events: Event[]
-  search: string
-  onDelete: (id: string) => void
+  events: AfishaEvent[]
+  onDelete: (id: number) => void
 }
 
-export default function EventList({ search, events }: Props) {
-  const filtered = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase())
-  )
-
+export default function EventList({ events, onDelete }: Props) {
   return (
     <div className="list">
-      {filtered.map((event) => (
+      {events.map((event) => (
         <EventCard
           key={event.id}
-          {...event}
+          event={event}
+          onDelete={onDelete}
         />
       ))}
     </div>

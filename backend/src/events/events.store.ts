@@ -20,7 +20,7 @@ export const events: AfishaEvent[] = [
         location: "00",
         category: 'Концерт',
         price: 500,
-        photo: "00"
+        photo: "https://th.bing.com/th/id/R.e5274ad00ab77438da6a4d602e150485?rik=tidLPi5xAJBqHA&pid=ImgRaw&r=0"
     },
     {
         id: 2,

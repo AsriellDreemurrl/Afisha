@@ -4,6 +4,7 @@ import axios from "axios";
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 
+// import type { Category } from "../../../../backend/src/events/events.store";
 import type { AfishaEvent } from "../../../../backend/src/events/events.store"; 
 
 import "./Home.css";
@@ -21,7 +22,6 @@ export default function Home() {
     axios
       .get("http://localhost:3000/events")
       .then((response) => {
-      
         setEvents(response.data);
       })
       .catch((error) => {
@@ -43,7 +43,6 @@ export default function Home() {
 
   
   const filteredEvents = events.filter((event) => {
-   
     const matchesSearch =
       event.name.toLowerCase().includes(search.toLowerCase()) ||
       event.description.toLowerCase().includes(search.toLowerCase());
@@ -70,7 +69,6 @@ export default function Home() {
 
       
       <EventList
-        search={search}
         events={filteredEvents as any} 
         onDelete={(id) => handleDeleteEvent(Number(id))} 
       />
