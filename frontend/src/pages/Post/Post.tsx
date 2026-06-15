@@ -1,5 +1,5 @@
-// Post.jsx
 import type { JSX } from 'react/jsx-runtime'
+import { useNavigate } from 'react-router-dom'
 import styles from './Post.module.css'
 import clsx from 'clsx'
 
@@ -12,10 +12,12 @@ interface PostProps {
   price?: string
 }
 
-export const Post = ({ image, category, description, date, location, price }: PostProps) : JSX.Element => {
+export const Post = ({ image, category, description, date, location, price }: PostProps): JSX.Element => {
+  const navigate = useNavigate()
+
   return (
     <div className={styles.container}>
-      <button className={styles.backButton}>
+      <button className={styles.backButton} onClick={() => navigate(-1)}>
         <span className={styles.backIcon}>&larr;</span> Назад к списку
       </button>
 
@@ -24,28 +26,27 @@ export const Post = ({ image, category, description, date, location, price }: Po
       </div>
 
       <div className={styles.content}>
-        <p className={styles.description}>Lorem ipsum dolor sit amet ham joda papada.{description}</p>
-        <span className={styles.category}>Lorem .{category}</span>
+        <p className={styles.description}>{description}</p>
+        <span className={styles.category}>{category}</span>
       </div>
 
-      {/* Объединяем иконки и текст в строки */}
       <div className={styles.info}>
         <div className={styles.infoRow}>
           <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.date}>13.03.2026{date}</p>
+          <p className={styles.date}>{date}</p>
         </div>
 
         <div className={styles.infoRow}>
           <img src="/gps-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.location}>Lorem, ipsum dolor.{location}</p>
+          <p className={styles.location}>{location}</p>
         </div>
 
         <div className={styles.infoRow}>
           <img src="/ticket-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.price}>1300{price}</p>
+          <p className={styles.price}>{price}</p>
         </div>
       </div>
- 
+
       <div className={styles.actions}>
         <button className={clsx(styles.btnAction, styles.btnEdit)}>
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />

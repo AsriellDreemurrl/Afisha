@@ -16,7 +16,7 @@ export const events: AfishaEvent[] = [
         id: 1,
         name: "Rock night",
         description: "Rock nightt",
-        datetime: "00",
+        datetime: "31.05.2026",
         location: "00",
         category: 'Концерт',
         price: 500,
