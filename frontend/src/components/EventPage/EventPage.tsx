@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import axios from "axios"
 import type { AfishaEvent } from "../../../../backend/src/events/events.store"
 import Post from "../../pages/Post/Post"
 
 export default function EventPage() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const [event, setEvent] = useState<AfishaEvent | null>(null)
 
   useEffect(() => {
