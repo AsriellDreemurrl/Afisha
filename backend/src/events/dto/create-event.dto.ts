@@ -1,4 +1,5 @@
 export class CreateEventDto {
+    id!: string;
     name!:string;
     description!:string;
     datetime!:string;

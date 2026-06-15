@@ -10,7 +10,7 @@ type Props = {
 
 export default function EventList({ search, events }: Props) {
   const filtered = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase())
+    event.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (

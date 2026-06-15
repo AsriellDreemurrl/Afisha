@@ -16,25 +16,12 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/events")
+      .get<Event[]>("http://localhost:3000/events")
       .then((response) => {
-        const formattedEvents: Event[] = response.data.map(
-          (event: any) => ({
-            id: String(event.id),
-            name: event.name,
-            description: event.description,
-            datetime: event.datetime,
-            location: event.location,
-            category: event.category,
-            price: String(event.price),
-            image: event.photo,
-          })
-        );
-
-        setEvents(formattedEvents);
+        setEvents(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error loading events:", error);
       });
   }, []);
 
