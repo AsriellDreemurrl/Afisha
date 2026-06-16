@@ -51,7 +51,7 @@ export default function Home() {
     const matchesCategory = category ? event.category === category : true;
 
     
-    const matchesDate = date ? event.datetime.startsWith(date) : true;
+   const matchesDate = date? event.datetime.startsWith(date.split("-").reverse().join(".")): true;
 
     return matchesSearch && matchesCategory && matchesDate;
   });

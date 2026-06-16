@@ -49,10 +49,10 @@ export default function Header({ search, setSearch, category, setCategory, date,
               <option value="" disabled hidden>
                 Категория
               </option>
-              <option value="all">Все</option>
-              <option value="concert">Концерты</option>
-              <option value="sport">Спорт</option>
-              <option value="lecture">Лекции</option>
+              <option value="">Все</option>
+              <option value="Концерт">Концерты</option>
+              <option value="Спорт">Спорт</option>
+              <option value="Лекция">Лекции</option>
             </select>
           </div>
 
