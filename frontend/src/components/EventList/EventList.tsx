@@ -7,11 +7,7 @@ type Props = {
   onDelete: (id: number) => void
 }
 
-export default function EventList({ search, events }: Props) {
-  const filtered = events.filter((event) =>
-    event.name.toLowerCase().includes(search.toLowerCase())
-  )
-
+export default function EventList({ events, onDelete }: Props) {
   return (
     <div className="list">
       {events.map((event) => (
