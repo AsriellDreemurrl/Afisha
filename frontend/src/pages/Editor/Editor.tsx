@@ -49,9 +49,10 @@ function Editor() {
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     if (date instanceof Date) {
+      const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
       setFormData(prev => ({
         ...prev,
-        datetime: date.toISOString()
+        datetime: formatted
       }));
     }
   };
@@ -81,7 +82,7 @@ function Editor() {
       const payload: Event = {
         name: formData.name,
         description: formData.description,
-        datetime: selectedDate.toISOString(),
+        datetime: formData.datetime,
         location: formData.location,
         category: formData.category,
         price: priceNumber,
