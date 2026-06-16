@@ -5,6 +5,11 @@
   overflow: hidden;
 }
 
+.eventcard__link{
+  text-decoration: none;
+  color: black
+}
+
 .card-image {
   width: 100%;
   height: 180px;

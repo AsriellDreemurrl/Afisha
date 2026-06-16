@@ -18,11 +18,11 @@ export const events: AfishaEvent[] = [
         id: 1,
         name: "Rock night",
         description: "Rock nightt",
-        datetime: "00",
+        datetime: "31.05.2026",
         location: "00",
         category: 'Концерт',
         price: 500,
-        photo: "00"
+        photo: "https://th.bing.com/th/id/R.e5274ad00ab77438da6a4d602e150485?rik=tidLPi5xAJBqHA&pid=ImgRaw&r=0"
     },
     {
         id: 2,
