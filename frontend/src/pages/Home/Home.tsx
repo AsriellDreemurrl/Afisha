@@ -1,62 +1,60 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-import Header from "../../components/Header/Header"
-import EventList from "../../components/EventList/EventList"
-import type { Event } from "../../types/Event"
-import "./Home.css"
+import Header from "../../components/Header/Header";
+import EventList from "../../components/EventList/EventList";
+
+// import type { Category } from "../../../../backend/src/events/events.store";
+import type { AfishaEvent } from "../../../../backend/src/events/events.store"; 
+
+import "./Home.css";
 
 export default function Home() {
-  const [search, setSearch] = useState("")
-  const [category, setCategory] = useState("")
-  const [date, setDate] = useState("")
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
 
-  const [events] = useState<Event[]>([
-    {
-      id: "1",
-      title: "Rock Night",
-      place: "Бишкек Арена",
-      date: "20 июня",
-      price: "500",
-      image:
-        "https://img.freepik.com/premium-vector/rock-night-neon-sign-style-text-vector_118419-809.jpg"
-    },
-    {
-      id: "2",
-      title: "Лекция React",
-      place: "Вефа",
-      date: "22 июня",
-      price: "200",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNspEQEwimKxheqGAL7UlywQIAyrueCVngug&s"
-    },
-    {
-      id: "3",
-      title: "Футбол",
-      place: "Дордой",
-      date: "25 июня",
-      price: "300",
-      image:
-        "https://upload.wikimedia.org/wikipedia/ru/0/01/%D0%A4%D0%9A_%D0%94%D0%BE%D1%80%D0%B4%D0%BE%D0%B9.png"
-    },
-    {
-      id: "3",
-      title: "Футбол",
-      place: "Дордой",
-      date: "25 июня",
-      price: "300",
-      image:
-        "https://upload.wikimedia.org/wikipedia/ru/0/01/%D0%A4%D0%9A_%D0%94%D0%BE%D1%80%D0%B4%D0%BE%D0%B9.png"
-    },
-        {
-      id: "3",
-      title: "Футбол",
-      place: "Дордой",
-      date: "25 июня",
-      price: "300",
-      image:
-        "https://upload.wikimedia.org/wikipedia/ru/0/01/%D0%A4%D0%9A_%D0%94%D0%BE%D1%80%D0%B4%D0%BE%D0%B9.png"
-    }
-  ])
+ 
+  const [events, setEvents] = useState<AfishaEvent[]>([]);
+
+  
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/events")
+      .then((response) => {
+        setEvents(response.data);
+      })
+      .catch((error) => {
+        console.error("Ошибка при получении данных:", error);
+      });
+  }, []);
+
+
+  const handleDeleteEvent = (id: number) => { 
+    axios
+      .delete(`http://localhost:3000/events/${id}`)
+      .then(() => {
+        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+      })
+      .catch((error) => {
+        console.error("Не удалось удалить событие:", error);
+      });
+  };
+
+  
+  const filteredEvents = events.filter((event) => {
+    const matchesSearch =
+      event.name.toLowerCase().includes(search.toLowerCase()) ||
+      event.description.toLowerCase().includes(search.toLowerCase());
+
+  
+    const matchesCategory = category ? event.category === category : true;
+
+    
+   const matchesDate = date? event.datetime.startsWith(date.split("-").reverse().join(".")): true;
+
+    return matchesSearch && matchesCategory && matchesDate;
+  });
 
   return (
     <div className="home">
@@ -69,11 +67,11 @@ export default function Home() {
         setDate={setDate}
       />
 
+      
       <EventList
-        search={search}
-        events={events}
-        onDelete={() => {}}
+        events={filteredEvents as any} 
+        onDelete={(id) => handleDeleteEvent(Number(id))} 
       />
     </div>
-  )
+  );
 }
