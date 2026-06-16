@@ -1,33 +1,32 @@
 import "./EventCard.css"
-
-type Props = {
-  title: string
-  place: string
-  date: string
-  price: string
-  image: string
-}
+import  { useNavigate } from 'react-router-dom'
+import type { Event } from "../../types/Event"
 
 export default function EventCard({
-  title,
-  place,
-  date,
+  id,
+  name,
+  location,
+  datetime,
   price,
-  image
-}: Props) {
+  photo,
+  category
+}: Event) {
+
+  const navigate = useNavigate()
+  const handleClick = () => { navigate(`/post/${id}`) }
   return (
-    <div className="card">
-      <img src={image} alt={title} className="card-image" />
+    <div className="card" onClick={handleClick}>
+      <img src={photo} alt={name} className="card-image" />
 
       <div className="card-content">
-        <h3>{title}</h3>
+        <h3>{name}</h3>
 
         <p className="card-info">
-          📅 {date} • 📍 {place}
+          📅 {datetime} • 📍 {location}
         </p>
 
         <div className="card-footer">
-          <span className="category">концерт</span>
+          <span className="category">{category}</span>
           <span className="price">{price} c</span>
         </div>
       </div>

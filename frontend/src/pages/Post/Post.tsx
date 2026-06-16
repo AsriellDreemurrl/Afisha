@@ -1,53 +1,69 @@
 // Post.jsx
-import type { JSX } from 'react/jsx-runtime'
 import styles from './Post.module.css'
 import clsx from 'clsx'
+import axios from 'axios'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import type { Event } from '../../types/Event'
 
-interface PostProps {
-  image?: string
-  category?: string
-  description?: string
-  date?: string
-  location?: string
-  price?: string
-}
+export const Post = ()  => {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const [event, setEvent] = useState<Event | null>(null)
+  const [loading, setLoading] = useState(true)
 
-export const Post = ({ image, category, description, date, location, price }: PostProps) : JSX.Element => {
+  useEffect(() => {
+    if(id) {
+      axios
+      .get(`http://localhost:3000/events/${id}`)
+      .then((response) => {
+        setEvent(response.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log('Ошибка загрузки события:', error)
+        setLoading(false)
+      })
+    }
+  }, [id])
+  if(loading) return <div className={styles.container}>Загрузка...</div>
+  if (!event) return <div className={styles.container}>Событие не найдено</div>
+
   return (
     <div className={styles.container}>
-      <button className={styles.backButton}>
+      <button className={styles.backButton} onClick={() => navigate('/')}>
         <span className={styles.backIcon}>&larr;</span> Назад к списку
       </button>
 
       <div className={styles.image}>
-        <img src={image} alt="Изображение места" />
+        <img src={event.photo} alt="Изображение места" />
       </div>
 
       <div className={styles.content}>
-        <p className={styles.description}>Lorem ipsum dolor sit amet ham joda papada.{description}</p>
-        <span className={styles.category}>Lorem .{category}</span>
+        <p className={styles.description}>{event.description}</p>
+        <span className={styles.category}>{event.category}</span>
       </div>
 
       {/* Объединяем иконки и текст в строки */}
       <div className={styles.info}>
         <div className={styles.infoRow}>
           <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.date}>13.03.2026{date}</p>
+          <p className={styles.date}>{event.datetime}</p>
         </div>
 
         <div className={styles.infoRow}>
           <img src="/gps-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.location}>Lorem, ipsum dolor.{location}</p>
+          <p className={styles.location}>{event.location}</p>
         </div>
 
         <div className={styles.infoRow}>
           <img src="/ticket-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.price}>1300{price}</p>
+          <p className={styles.price}>{event.price} Сом</p>
         </div>
       </div>
  
       <div className={styles.actions}>
-        <button className={clsx(styles.btnAction, styles.btnEdit)}>
+        <button className={clsx(styles.btnAction, styles.btnEdit)} onClick={() => navigate('/editor')}>
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />
           Редактировать
         </button>

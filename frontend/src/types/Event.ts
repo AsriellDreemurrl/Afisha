@@ -1,8 +1,10 @@
 export type Event = {
-  id: string
-  title: string
-  place: string
-  date: string
-  price: string
-  image : string
+  id: number
+  name: string
+  description: string
+  datetime: string  
+  location: string
+  category: string
+  price: number
+  photo: string
 }
