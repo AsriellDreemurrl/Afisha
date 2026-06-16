@@ -63,7 +63,7 @@ export const Post = ()  => {
       </div>
  
       <div className={styles.actions}>
-        <button className={clsx(styles.btnAction, styles.btnEdit)} onClick={() => navigate('/editor')}>
+        <button className={clsx(styles.btnAction, styles.btnEdit)} onClick={() => navigate(`/editor/${event.id}`)}>
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />
           Редактировать
         </button>
