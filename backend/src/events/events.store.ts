@@ -1,3 +1,5 @@
+import { Event } from './entities/event.entity';
+
 export type Category = 'Концерт' | 'Выставка' | 'Спорт' | 'Лекция' | 'Другое';
 
 export interface AfishaEvent {
@@ -43,3 +45,4 @@ export const events: AfishaEvent[] = [
         photo: "00"
     }
 ]
+export const eventsStore: any[] = events.map(item => ({ ...item, id: item.id.toString() }));

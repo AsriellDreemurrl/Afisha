@@ -20,7 +20,7 @@ export default function Home() {
   
   useEffect(() => {
     axios
-      .get("http://localhost:3000/events")
+      .get<Event[]>("http://localhost:3000/events")
       .then((response) => {
         setEvents(response.data);
       })
