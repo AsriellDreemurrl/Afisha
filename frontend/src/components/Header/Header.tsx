@@ -14,7 +14,7 @@ type Props = {
 
 export default function Header({ search, setSearch, category, setCategory, date, setDate }: Props) {
   const navigate = useNavigate()
-  
+
   return (
     <div className="header">
       <div className="header-logo">
@@ -40,16 +40,15 @@ export default function Header({ search, setSearch, category, setCategory, date,
         <div className="filters-row">
           <div className="select-wrapper">
             <select
-              title="Категория"
-              value={category}
+              value={category === '' ? 'all' : category}
               onChange={e => {
-                setCategory(e.target.value)
+                setCategory(e.target.value === 'all' ? '' : e.target.value)
                 e.target.blur()
               }}>
               <option value="" disabled hidden>
                 Категория
               </option>
-              <option value="">Все</option>
+              <option value="all">Все</option>
               <option value="Концерт">Концерты</option>
               <option value="Спорт">Спорт</option>
               <option value="Лекция">Лекции</option>
@@ -59,10 +58,10 @@ export default function Header({ search, setSearch, category, setCategory, date,
           <div className="select-wrapper">
             <DatePicker
               className="datepicker-wrapper"
-              selected={date ? new Date(date) : null}
+              selected={date ? new Date(date + 'T00:00:00') : null}
               onChange={(selectedDate: Date | null) => {
-                setDate(selectedDate ? selectedDate.toISOString().split('T')[0] : '')
-                ;(document.activeElement as HTMLElement)?.blur()
+                setDate(selectedDate ? selectedDate.toLocaleDateString('en-CA') : '')
+                  ; (document.activeElement as HTMLElement)?.blur()
               }}
               placeholderText="Дата"
               dateFormat="dd.MM.yyyy"
