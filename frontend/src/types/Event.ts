@@ -1,4 +1,4 @@
-export type Event = {
+export type AfishaEvent = {
   id: number
   name: string
   description: string

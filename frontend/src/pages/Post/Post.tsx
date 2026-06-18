@@ -1,15 +1,14 @@
-// Post.jsx
 import styles from './Post.module.css'
 import clsx from 'clsx'
 import axios from 'axios'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import type { Event } from '../../types/Event'
+import type { AfishaEvent } from '../../types/Event'
 
 export const Post = ()  => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [event, setEvent] = useState<Event | null>(null)
+  const [event, setEvent] = useState<AfishaEvent | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

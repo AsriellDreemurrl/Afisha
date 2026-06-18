@@ -3,16 +3,16 @@ import axios from "axios";
 
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
-import type { Event } from "../../types/Event";
+import type { AfishaEvent } from "../../types/Event";
 
-import "./Home.css";
+import "./Home.module.css";
 
-export default function Home() {
+const Home = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
 
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<AfishaEvent[]>([]);
 
   useEffect(() => {
     axios
@@ -44,3 +44,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;

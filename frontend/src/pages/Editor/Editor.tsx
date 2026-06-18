@@ -1,4 +1,3 @@
-// Editor.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import style from './Editor.module.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
+import type { AfishaEvent } from '../../types/Event';
 
 registerLocale('ru', ru);
 
@@ -52,16 +52,16 @@ function Editor() {
 
   const handleSave = async () => {
     try {
-      const eventData = {
+      const eventData: Omit<AfishaEvent, 'id'> = {
         name,
         description,
-        datetime: selectedDate ? selectedDate.toISOString() : null,
+        datetime: selectedDate ? selectedDate.toISOString() : '',
         location,
         category,
         price: Number(price),
         photo,
       }
-
+      
       if (id) {
         await axios.put(`http://localhost:3000/events/${id}`, eventData)
         navigate(`/post/${id}`)
