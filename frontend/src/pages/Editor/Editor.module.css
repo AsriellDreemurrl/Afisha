@@ -47,6 +47,7 @@ input {
     padding: 10px;
     outline: none;
     box-shadow: none;
+    resize: none;
 }
 
 .aboutinp {
