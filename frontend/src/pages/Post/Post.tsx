@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import type { AfishaEvent } from '../../types/Event'
 
-export const Post = ()  => {
+const Post = ()  => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [event, setEvent] = useState<AfishaEvent | null>(null)
@@ -36,13 +36,8 @@ export const Post = ()  => {
     if (!id) return
     try {
       await axios.delete(`http://localhost:3000/events/${id}`)
-      setMessage({
-        type: 'success',
-        text: 'Событие успешно удалено',
-      })
-      setTimeout(() => {
-        navigate('/')
-      }, 2500)
+      navigate('/', {state: {message: 'Событие успешно удалено', type: 'success'}})
+      
     } catch (error) {
       console.error(error)
 

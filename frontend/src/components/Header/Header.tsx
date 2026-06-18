@@ -1,4 +1,4 @@
-import './Header.module.css'
+import styles from './Header.module.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useNavigate } from "react-router-dom"
@@ -12,33 +12,33 @@ type Props = {
   setDate: (value: string) => void
 }
 
-export default function Header({ search, setSearch, category, setCategory, date, setDate }: Props) {
+const Header = ({ search, setSearch, category, setCategory, date, setDate }: Props) => {
   const navigate = useNavigate()
   
   return (
-    <div className="header">
-      <div className="header-logo">
-        <div className="logo-box">
+    <div className={styles.header}>
+      <div className={styles.headerLogo}>
+        <div className={styles.logoBox}>
           <img title="Афиша" src="/calendar-icon.svg" />
-          <h2 className="logo">Афиша</h2>
+          <h2 className={styles.logo}>Афиша</h2>
         </div>
-        <button className="create-btn" onClick={() => navigate('/editor')}>
+        <button className={styles.createBtn} onClick={() => navigate('/editor')}>
           <span>+</span>Создать
         </button>
       </div>
 
-      <div className="header-content">
-        <div className="search-row">
+      <div className={styles.headerContent}>
+        <div className={styles.searchRow}>
           <input
-            className="search"
+            className={styles.search}
             placeholder="Поиск по названию"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="filters-row">
-          <div className="select-wrapper">
+        <div className={styles.filtersRow}>
+          <div className={styles.selectWrapper}>
             <select
               title="Категория"
               value={category}
@@ -56,9 +56,9 @@ export default function Header({ search, setSearch, category, setCategory, date,
             </select>
           </div>
 
-          <div className="select-wrapper">
+          <div className={styles.selectWrapper}>
             <DatePicker
-              className="datepicker-wrapper"
+              className={styles.datepickerWrapper}
               selected={date ? new Date(date) : null}
               onChange={(selectedDate: Date | null) => {
                 setDate(selectedDate ? selectedDate.toISOString().split('T')[0] : '')
@@ -74,3 +74,5 @@ export default function Header({ search, setSearch, category, setCategory, date,
     </div>
   )
 }
+
+export default Header

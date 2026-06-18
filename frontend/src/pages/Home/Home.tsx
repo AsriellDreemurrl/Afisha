@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 import type { AfishaEvent } from "../../types/Event";
 
-import "./Home.module.css";
+import styles from "./Home.module.css";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -13,6 +14,17 @@ const Home = () => {
   const [date, setDate] = useState("");
 
   const [events, setEvents] = useState<AfishaEvent[]>([]);
+
+  const location = useLocation()
+  const [message, setMessage] = useState<{ text: string, type: string } | null>(null)
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage({ text: location.state.message, type: location.state.type })
+      setTimeout(() => setMessage(null), 2500)
+    }
+  }, [location.state])
+
 
   useEffect(() => {
     axios
@@ -25,8 +37,25 @@ const Home = () => {
       });
   }, []);
 
+  const filteredEvents = events.filter((event) => {
+    console.log(event.datetime, date)
+    const matchesSearch =
+      event.name?.toLowerCase().includes(search.toLowerCase()) ||
+      event.description?.toLowerCase().includes(search.toLowerCase())
+
+    const matchesCategory = category && category !== 'all'
+      ? event.category === category
+      : true
+
+    const matchesDate = date
+      ? event.datetime.startsWith(date.split('-').reverse().join('.'))
+      : true
+
+    return matchesSearch && matchesCategory && matchesDate
+  })
+
   return (
-    <div className="home">
+    <div className={styles.home}>
       <Header
         search={search}
         setSearch={setSearch}
@@ -37,10 +66,15 @@ const Home = () => {
       />
 
       <EventList
-        search={search}
-        events={events}
-        onDelete={() => {}}
+        events={filteredEvents}
+        onDelete={() => { }}
       />
+
+      {message && (
+        <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>
+          {message.text}
+        </div>
+      )}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import type { AfishaEvent } from '../../types/Event';
 
 registerLocale('ru', ru);
 
-function Editor() {
+const Editor = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [name, setName] = useState('')

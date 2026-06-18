@@ -1,6 +1,6 @@
-import "./EventCard.css"
+import styles from "./EventCard.module.css"
 import  { useNavigate } from 'react-router-dom'
-import type { Event } from "../../types/Event"
+import type { AfishaEvent } from "../../types/Event"
 
 export default function EventCard({
   id,
@@ -10,24 +10,23 @@ export default function EventCard({
   price,
   photo,
   category
-}: Event) {
-
+}: AfishaEvent & { onDelete: (id: number) => void }) {
   const navigate = useNavigate()
   const handleClick = () => { navigate(`/post/${id}`) }
   return (
-    <div className="card" onClick={handleClick}>
-      <img src={photo} alt={name} className="card-image" />
+    <div className={styles.card} onClick={handleClick}>
+      <img src={photo} alt={name} className={styles.cardImage} />
 
-      <div className="card-content">
+      <div className={styles.cardContent}>
         <h3>{name}</h3>
 
-        <p className="card-info">
+        <p className={styles.cardInfo}>
           📅 {datetime} • 📍 {location}
         </p>
 
-        <div className="card-footer">
-          <span className="category">{category}</span>
-          <span className="price">{price} c</span>
+        <div className={styles.cardFooter}>
+          <span className={styles.category}>{category}</span>
+          <span className={styles.price}>{price} c</span>
         </div>
       </div>
     </div>
