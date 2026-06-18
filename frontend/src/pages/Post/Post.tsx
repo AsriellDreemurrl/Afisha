@@ -10,6 +10,10 @@ export const Post = ()  => {
   const navigate = useNavigate()
   const [event, setEvent] = useState<AfishaEvent | null>(null)
   const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error'
+    text: string
+  } | null>(null)
 
   useEffect(() => {
     if(id) {
@@ -28,8 +32,35 @@ export const Post = ()  => {
   if(loading) return <div className={styles.container}>Загрузка...</div>
   if (!event) return <div className={styles.container}>Событие не найдено</div>
 
+  const handleDelete = async () => {
+    if (!id) return
+    try {
+      await axios.delete(`http://localhost:3000/events/${id}`)
+      setMessage({
+        type: 'success',
+        text: 'Событие успешно удалено',
+      })
+      setTimeout(() => {
+        navigate('/')
+      }, 2500)
+    } catch (error) {
+      console.error(error)
+
+      setMessage({
+        type: 'error',
+        text: 'Не удалось удалить событие',
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 2500)
+    }
+  }
+
   return (
     <div className={styles.container}>
+      {message && (
+        <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>{message.text}</div>
+      )}
       <button className={styles.backButton} onClick={() => navigate('/')}>
         <span className={styles.backIcon}>&larr;</span> Назад к списку
       </button>
@@ -67,7 +98,7 @@ export const Post = ()  => {
           Редактировать
         </button>
 
-        <button className={clsx(styles.btnAction, styles.btnDelete)}>
+        <button className={clsx(styles.btnAction, styles.btnDelete)} onClick={handleDelete}>
           <img src="/trash-icon.svg" alt="" className={styles.infoIcon} />
           Удалить
         </button>
