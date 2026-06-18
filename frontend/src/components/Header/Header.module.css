@@ -89,7 +89,17 @@
   color: #333;
 }
 
-.selectWrapper select,
+.selectWrapper > select {
+  outline: none;
+  box-shadow: none;
+}
+
+.selectWrapper > select {
+  outline: none;
+  box-shadow: none;
+}
+
+.selectWrapper > select,
 .datepickerWrapper {
   width: 100%;
   appearance: none;

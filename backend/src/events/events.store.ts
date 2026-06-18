@@ -43,3 +43,4 @@ export const events: AfishaEvent[] = [
         photo: "https://hjzdnbyyicfewjajahpf.supabase.co/storage/v1/object/sign/another/footbal.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hZWFhYzM5NS0wNTcxLTRkNDMtOTU1ZC1kOGM1MWM5ZmNhMjYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhbm90aGVyL2Zvb3RiYWwuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTYwMDc3MiwiZXhwIjoxODEzMTM2NzcyfQ.Oxkf2IFe_Jj4s1oQ-4Fn-SaHjLHphe04Jl67nWk075Y"
     }
 ]
+export const eventsStore: any[] = events.map(item => ({ ...item, id: item.id.toString() }));

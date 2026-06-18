@@ -10,6 +10,16 @@ import type { AfishaEvent } from '../../types/Event';
 
 registerLocale('ru', ru);
 
+interface FormState {
+  name: string;
+  description: string;
+  datetime: string;
+  location: string;
+  category: '' | 'Концерт' | 'Лекция' | 'Спорт' | 'Выставка' | 'Другое';
+  price: string;
+  photo: string;
+}
+
 const Editor = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()

@@ -14,7 +14,7 @@ type Props = {
 
 const Header = ({ search, setSearch, category, setCategory, date, setDate }: Props) => {
   const navigate = useNavigate()
-  
+
   return (
     <div className={styles.header}>
       <div className={styles.headerLogo}>
@@ -40,19 +40,18 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
         <div className={styles.filtersRow}>
           <div className={styles.selectWrapper}>
             <select
-              title="Категория"
-              value={category}
+              value={category === '' ? 'all' : category}
               onChange={e => {
-                setCategory(e.target.value)
+                setCategory(e.target.value === 'all' ? '' : e.target.value)
                 e.target.blur()
               }}>
               <option value="" disabled hidden>
                 Категория
               </option>
               <option value="all">Все</option>
-              <option value="concert">Концерты</option>
-              <option value="sport">Спорт</option>
-              <option value="lecture">Лекции</option>
+              <option value="Концерт">Концерты</option>
+              <option value="Спорт">Спорт</option>
+              <option value="Лекция">Лекции</option>
             </select>
           </div>
 
@@ -61,8 +60,8 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
               className={styles.datepickerWrapper}
               selected={date ? new Date(date) : null}
               onChange={(selectedDate: Date | null) => {
-                setDate(selectedDate ? selectedDate.toISOString().split('T')[0] : '')
-                ;(document.activeElement as HTMLElement)?.blur()
+                setDate(selectedDate ? selectedDate.toLocaleDateString('en-CA') : '')
+                  ; (document.activeElement as HTMLElement)?.blur()
               }}
               placeholderText="Дата"
               dateFormat="dd.MM.yyyy"

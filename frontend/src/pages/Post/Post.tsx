@@ -69,7 +69,6 @@ const Post = ()  => {
         <span className={styles.category}>{event.category}</span>
       </div>
 
-      {/* Объединяем иконки и текст в строки */}
       <div className={styles.info}>
         <div className={styles.infoRow}>
           <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
@@ -86,7 +85,7 @@ const Post = ()  => {
           <p className={styles.price}>{event.price} Сом</p>
         </div>
       </div>
- 
+
       <div className={styles.actions}>
         <button className={clsx(styles.btnAction, styles.btnEdit)} onClick={() => navigate(`/editor/${event.id}`)}>
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />

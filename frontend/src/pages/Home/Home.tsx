@@ -4,6 +4,8 @@ import axios from "axios";
 
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
+
+//generics, memoization, use .envm standardize, better to make pages always export from components, not components export from pages, make many things global such as * and contanier in css, really don't use variables from back, make interface AfishaEvent global and make everyone use it instead of declaring another one
 import type { AfishaEvent } from "../../types/Event";
 
 import styles from "./Home.module.css";
@@ -28,12 +30,12 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/events")
+      .get<AfishaEvent[]>("http://localhost:3000/events")
       .then((response) => {
         setEvents(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Ошибка при получении данных:", error);
       });
   }, []);
 
@@ -65,6 +67,7 @@ const Home = () => {
         setDate={setDate}
       />
 
+      
       <EventList
         events={filteredEvents}
         onDelete={() => { }}
