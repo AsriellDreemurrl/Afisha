@@ -1,6 +1,7 @@
 import styles from "./EventCard.module.css"
 import  { useNavigate } from 'react-router-dom'
 import type { AfishaEvent } from "../../types/Event"
+import { formatDate } from "../../utils/dateUtils"
 
 export default function EventCard({
   id,
@@ -21,7 +22,7 @@ export default function EventCard({
         <h3>{name}</h3>
 
         <p className={styles.cardInfo}>
-          📅 {datetime} • 📍 {location}
+          📅 {formatDate(datetime)} • 📍 {location}
         </p>
 
         <div className={styles.cardFooter}>

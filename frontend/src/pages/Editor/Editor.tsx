@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
-import 'react-datepicker/dist/react-datepicker.css';
-import style from './Editor.module.css';
+import "react-datepicker/dist/react-datepicker.css";
+import style from "./Editor.module.css"
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
-import type { AfishaEvent } from '../../types/Event';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { AfishaEvent } from "../../types/Event";
+import axios from 'axios';
+import { parseDate } from "../../utils/dateUtils";
 
 registerLocale('ru', ru);
 
@@ -21,37 +22,40 @@ interface FormState {
 }
 
 const Editor = () => {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [location, setLocation] = useState('')
-  const [category, setCategory] = useState('')
-  const [price, setPrice] = useState('')
-  const [photo, setPhoto] = useState('')
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormState>({
+    name: '',
+    description: '',
+    datetime: '',
+    location: '',
+    category: '',
+    price: '',
+    photo: ''
+  });
 
   useEffect(() => {
     if (!id) return
     const fetchEvent = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/events/${id}`)
-        const event = response.data
-        setName(event.name)
-        setDescription(event.description)
-        setLocation(event.location)
-        setCategory(event.category)
-        setPrice(String(event.price))
-        setPhoto(event.photo)
+        const event: AfishaEvent = response.data
+        setFormData({
+          name: event.name,
+          description: event.description,
+          datetime: event.datetime,
+          location: event.location,
+          category: event.category as FormState['category'],
+          price: String(event.price),
+          photo: event.photo,
+        })
         if (event.datetime) {
-          const parts = event.datetime.split(' ')
-          const dateParts = parts[0].split('.')
-          const timeParts = parts[1] ? parts[1] : '00:00'
-          const isoString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timeParts}:00`
-          const parsedDate = new Date(isoString)
-          if (!isNaN(parsedDate.getTime())) {
-            setSelectedDate(parsedDate)
-          }
+          const parsed = parseDate(event.datetime)
+          if(parsed) setSelectedDate(parsed)
         }
       } catch (error) {
         console.error('Ошибка загрузки:', error)
@@ -60,111 +64,181 @@ const Editor = () => {
     fetchEvent()
   }, [id])
 
-  const handleSave = async () => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    const fieldName = id as keyof FormState;
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: value
+    }));
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if (date instanceof Date) {
+      setFormData(prev => ({
+        ...prev,
+        datetime: date.toISOString()
+      }));
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const priceNumber = Number(formData.price);
+    if (
+      !formData.name ||
+      !formData.description ||
+      !selectedDate ||
+      !formData.location ||
+      !formData.category ||
+      !formData.photo ||
+      formData.price.trim() === '' ||
+      Number.isNaN(priceNumber)
+    ) {
+      setError('Пожалуйста, заполните все поля правильными значениями');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      const eventData: Omit<AfishaEvent, 'id'> = {
-        name,
-        description,
-        datetime: selectedDate ? selectedDate.toISOString() : '',
-        location,
-        category,
-        price: Number(price),
-        photo,
-      }
-      
+      const payload: Omit<AfishaEvent, 'id'> = {
+        name: formData.name,
+        description: formData.description,
+        datetime: selectedDate.toISOString(),
+        location: formData.location,
+        category: formData.category,
+        price: priceNumber,
+        photo: formData.photo,
+      };
+
       if (id) {
-        await axios.put(`http://localhost:3000/events/${id}`, eventData)
+        await axios.put(`http://localhost:3000/events/${id}`, payload)
         navigate(`/post/${id}`)
       } else {
-        const response = await axios.post('http://localhost:3000/events', eventData)
-        navigate(`/post/${response.data.id}`)
+        const response = await axios.post('http://localhost:3000/events', payload);
+        navigate(`/post/${response.data.id}`);
       }
-    } catch (error) {
-      console.error('Ошибка сохранения:', error)
+    } catch (err) {
+      console.error('Error saving event:', err);
+      setError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={style.container}>
       <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
-      <label htmlFor="title" className={style.label}>
-        Название
-      </label>
-      <input type="text" value={name} onChange={e => setName(e.target.value)} className={style.title} id="title" />
-      <label htmlFor="desc" className={style.label}>
-        Описание
-      </label>
-      <textarea
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-        className={style.description}
-        id="desc"
-      />
-      <div className={style.aboutinp_wrapper}>
-        <div className={style.input_group}>
-          <label htmlFor="date" className={style.label}>
-            Дата и время
-          </label>
-          <DatePicker
-            locale="ru"
-            selected={selectedDate}
-            onChange={(date: Date | null) => setSelectedDate(date)}
-            showTimeSelect
-            dateFormat="Pp"
-          />
+
+      {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
+
+      <form onSubmit={handleSave}>
+        <label htmlFor="name" className={style.label}>Название</label>
+        <input
+          type="text"
+          className={style.title}
+          id="name"
+          value={formData.name}
+          onChange={handleInputChange}
+          required
+        />
+
+        <label htmlFor="description" className={style.label}>Описание</label>
+        <textarea
+          className={style.description}
+          id="description"
+          value={formData.description}
+          onChange={handleInputChange}
+          required
+        />
+
+        <div className={style.aboutinp_wrapper}>
+          <div className={style.input_group}>
+            <label htmlFor="datetime" className={style.label}>Дата и время</label>
+            <DatePicker
+              id="datetime"
+              locale="ru"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              showTimeSelect
+              dateFormat="Pp"
+              required
+            />
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="location" className={style.label}>Место</label>
+            <input
+              type="text"
+              className={style.aboutinp}
+              id="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
         </div>
-        <div className={style.input_group}>
-          <label htmlFor="place" className={style.label}>
-            Место
-          </label>
-          <input
-            type="text"
-            value={location}
-            onChange={e => setLocation(e.target.value)}
-            className={style.aboutinp}
-            id="place"
-          />
+
+        <div className={style.aboutinp_wrapper}>
+          <div className={style.input_group}>
+            <label htmlFor="category" className={style.label}>Категория</label>
+            <select
+              className={style.aboutinp}
+              id="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="" disabled>Выберите</option>
+              <option value="Концерт">Концерт</option>
+              <option value="Лекция">Лекция</option>
+              <option value="Спорт">Спорт</option>
+              <option value="Выставка">Выставка</option>
+              <option value="Другое">Другое</option>
+            </select>
+          </div>
+          <div className={style.input_group}>
+            <label htmlFor="price" className={style.label}>Цена</label>
+            <input
+              type="number"
+              className={style.aboutinp}
+              id="price"
+              value={formData.price}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
         </div>
-      </div>
-      <div className={style.aboutinp_wrapper}>
-        <div className={style.input_group}>
-          <label htmlFor="cat" className={style.label}>
-            Категория
-          </label>
-          <select className={style.aboutinp} id="cat" value={category} onChange={e => setCategory(e.target.value)}>
-            <option value="" disabled hidden>
-              Выберите
-            </option>
-            <option value="Концерт">Концерт</option>
-            <option value="Лекция">Лекция</option>
-            <option value="Спорт">Спорт</option>
-          </select>
+
+        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+        <input
+          type="url"
+          className={style.photo}
+          id="photo"
+          value={formData.photo}
+          onChange={handleInputChange}
+          required
+        />
+
+        <div className={style.btnwrapper}>
+          <button
+            type="submit"
+            className={style.btn}
+            disabled={loading}
+          >
+            {loading ? 'Сохранение...' : 'Сохранить'}
+          </button>
+          <button
+            type="button"
+            className={style.btn}
+            onClick={() => navigate(-1)}
+          >
+            Отмена
+          </button>
         </div>
-        <div className={style.input_group}>
-          <label htmlFor="price" className={style.label}>
-            Цена
-          </label>
-          <input
-            type="text"
-            value={price}
-            onChange={e => setPrice(e.target.value)}
-            className={style.aboutinp}
-            id="price"
-          />
-        </div>
-      </div>
-      <label htmlFor="photo" className={style.label}>
-        Ссылка на фото
-      </label>
-      <input type="url" value={photo} onChange={e => setPhoto(e.target.value)} className={style.photo} id="photo" />
-      <div className={style.btnwrapper}>
-        <button className={style.btn} onClick={handleSave}>
-          Сохранить
-        </button>
-        <button className={style.btn} onClick={() => navigate(-1)}>
-          Отмена
-        </button>
-      </div>
+      </form>
     </div>
   )
 }

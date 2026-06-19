@@ -9,6 +9,7 @@ import EventList from "../../components/EventList/EventList";
 import type { AfishaEvent } from "../../types/Event";
 
 import styles from "./Home.module.css";
+import { parseDate } from "../../utils/dateUtils";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -40,7 +41,6 @@ const Home = () => {
   }, []);
 
   const filteredEvents = events.filter((event) => {
-    console.log(event.datetime, date)
     const matchesSearch =
       event.name?.toLowerCase().includes(search.toLowerCase()) ||
       event.description?.toLowerCase().includes(search.toLowerCase())
@@ -50,7 +50,7 @@ const Home = () => {
       : true
 
     const matchesDate = date
-      ? event.datetime.startsWith(date.split('-').reverse().join('.'))
+      ? parseDate(event.datetime)?.toISOString().startsWith(date)
       : true
 
     return matchesSearch && matchesCategory && matchesDate

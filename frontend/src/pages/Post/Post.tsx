@@ -4,8 +4,9 @@ import axios from 'axios'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import type { AfishaEvent } from '../../types/Event'
+import { formatDate } from '../../utils/dateUtils'
 
-const Post = ()  => {
+const Post = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [event, setEvent] = useState<AfishaEvent | null>(null)
@@ -16,28 +17,30 @@ const Post = ()  => {
   } | null>(null)
 
   useEffect(() => {
-    if(id) {
+    if (id) {
+      console.log('Fetching post with id:', id)
       axios
-      .get(`http://localhost:3000/events/${id}`)
-      .then((response) => {
-        setEvent(response.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log('Ошибка загрузки события:', error)
-        setLoading(false)
-      })
+        .get(`http://localhost:3000/events/${id}`)
+        .then((response) => {
+          console.log('Got response:', response.data)
+          setEvent(response.data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log('Ошибка загрузки события:', error)
+          setLoading(false)
+        })
     }
   }, [id])
-  if(loading) return <div className={styles.container}>Загрузка...</div>
+  if (loading) return <div className={styles.container}>Загрузка...</div>
   if (!event) return <div className={styles.container}>Событие не найдено</div>
 
   const handleDelete = async () => {
     if (!id) return
     try {
       await axios.delete(`http://localhost:3000/events/${id}`)
-      navigate('/', {state: {message: 'Событие успешно удалено', type: 'success'}})
-      
+      navigate('/', { state: { message: 'Событие успешно удалено', type: 'success' } })
+
     } catch (error) {
       console.error(error)
 
@@ -72,7 +75,7 @@ const Post = ()  => {
       <div className={styles.info}>
         <div className={styles.infoRow}>
           <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
-          <p className={styles.date}>{event.datetime}</p>
+          <p className={styles.date}>{formatDate(event.datetime)}</p>
         </div>
 
         <div className={styles.infoRow}>

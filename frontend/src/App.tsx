@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout/Layout'
 import Home from './pages/Home/Home'
 import Editor from './pages/Editor/Editor'
-import EventPage from './components/EventPage/EventPage'
+import Post from './pages/Post/Post'
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/editor" element={<Editor />} />
             <Route path="/editor/:id" element={<Editor />} />
-            <Route path="/post/:id" element={<EventPage />} />
+            <Route path="/post/:id" element={<Post />} />
           </Routes>
         </Layout>
     </BrowserRouter>

@@ -20,7 +20,7 @@ export class EventsService {
   update(id: number, updated: AfishaEvent): AfishaEvent | undefined {
     const index = events.findIndex((event) => event.id === id);
     if (index === -1) return undefined;
-    events[index] = updated;
+    events[index] = { ...updated, id };
     return events[index];
   }
 
