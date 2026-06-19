@@ -55,6 +55,7 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   margin-bottom: 0;
+  background: #f1f5f9d6;
 }
 
 .searchRow::before {
@@ -90,16 +91,19 @@
 }
 
 .selectWrapper > select {
+  width: 100%;
+  appearance: none;
+  padding: 10px 34px 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: white;  
+  position: relative;
+  margin: 0;
   outline: none;
   box-shadow: none;
+  background: #f1f5f9d6;
 }
 
-.selectWrapper > select {
-  outline: none;
-  box-shadow: none;
-}
-
-.selectWrapper > select,
 .datepickerWrapper {
   width: 100%;
   appearance: none;
@@ -110,6 +114,7 @@
   position: relative;
   margin: 0;
   color: #666; 
+  background: #f1f5f9d6;
 }
 
 .datepickerWrapper::after,
@@ -143,7 +148,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center; 
-  background: white;
+  background: #f1f5f9d6;
   color: #333;
   border: 1px solid #ccc;
   padding: 8px 22px;
