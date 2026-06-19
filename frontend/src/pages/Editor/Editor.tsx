@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import style from "./Editor.module.css"
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
-import { useNavigate } from 'react-router-dom';
-import type { Event } from "../../types/Event";
+import { useNavigate, useParams } from 'react-router-dom';
+import type { AfishaEvent } from "../../types/Event";
 import axios from 'axios';
+import { parseDate } from "../../utils/dateUtils";
 
 registerLocale('ru', ru);
 
@@ -20,12 +21,13 @@ interface FormState {
   photo: string;
 }
 
-function Editor() {
+const Editor = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState<FormState>({
     name: '',
     description: '',
@@ -36,10 +38,35 @@ function Editor() {
     photo: ''
   });
 
+  useEffect(() => {
+    if (!id) return
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/events/${id}`)
+        const event: AfishaEvent = response.data
+        setFormData({
+          name: event.name,
+          description: event.description,
+          datetime: event.datetime,
+          location: event.location,
+          category: event.category as FormState['category'],
+          price: String(event.price),
+          photo: event.photo,
+        })
+        if (event.datetime) {
+          const parsed = parseDate(event.datetime)
+          if(parsed) setSelectedDate(parsed)
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки:', error)
+      }
+    }
+    fetchEvent()
+  }, [id])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     const fieldName = id as keyof FormState;
-
     setFormData(prev => ({
       ...prev,
       [fieldName]: value
@@ -49,17 +76,16 @@ function Editor() {
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     if (date instanceof Date) {
-      const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
       setFormData(prev => ({
         ...prev,
-        datetime: formatted
+        datetime: date.toISOString()
       }));
     }
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const priceNumber = Number(formData.price);
     if (
       !formData.name ||
@@ -79,59 +105,56 @@ function Editor() {
     setError(null);
 
     try {
-      const payload: Event = {
+      const payload: Omit<AfishaEvent, 'id'> = {
         name: formData.name,
         description: formData.description,
-        datetime: formData.datetime,
+        datetime: selectedDate.toISOString(),
         location: formData.location,
         category: formData.category,
         price: priceNumber,
         photo: formData.photo,
-        id: String(Date.now())
       };
 
-      const response = await axios.post('http://localhost:3000/events', payload);
-      console.log('Данные сохранены:', response.data);
-
-      navigate('/');
+      if (id) {
+        await axios.put(`http://localhost:3000/events/${id}`, payload)
+        navigate(`/post/${id}`)
+      } else {
+        const response = await axios.post('http://localhost:3000/events', payload);
+        navigate(`/post/${response.data.id}`);
+      }
     } catch (err) {
       console.error('Error saving event:', err);
       setError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
-    } finally {
       setLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    navigate('/');
-  };
-
   return (
     <div className={style.container}>
-      <h1 className={style.name}>Новое событие</h1>
-      
+      <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
+
       {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
-      
+
       <form onSubmit={handleSave}>
         <label htmlFor="name" className={style.label}>Название</label>
-        <input 
-          type="text" 
-          className={style.title} 
+        <input
+          type="text"
+          className={style.title}
           id="name"
           value={formData.name}
           onChange={handleInputChange}
           required
         />
-        
+
         <label htmlFor="description" className={style.label}>Описание</label>
-        <textarea 
-          className={style.description} 
+        <textarea
+          className={style.description}
           id="description"
           value={formData.description}
           onChange={handleInputChange}
           required
         />
-        
+
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
             <label htmlFor="datetime" className={style.label}>Дата и время</label>
@@ -147,9 +170,9 @@ function Editor() {
           </div>
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
-            <input 
-              type="text" 
-              className={style.aboutinp} 
+            <input
+              type="text"
+              className={style.aboutinp}
               id="location"
               value={formData.location}
               onChange={handleInputChange}
@@ -157,12 +180,12 @@ function Editor() {
             />
           </div>
         </div>
-        
+
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
             <label htmlFor="category" className={style.label}>Категория</label>
-            <select 
-              className={style.aboutinp} 
+            <select
+              className={style.aboutinp}
               id="category"
               value={formData.category}
               onChange={handleInputChange}
@@ -178,9 +201,9 @@ function Editor() {
           </div>
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
-            <input 
-              type="number" 
-              className={style.aboutinp} 
+            <input
+              type="number"
+              className={style.aboutinp}
               id="price"
               value={formData.price}
               onChange={handleInputChange}
@@ -188,29 +211,29 @@ function Editor() {
             />
           </div>
         </div>
-        
+
         <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input 
-          type="url" 
-          className={style.photo} 
+        <input
+          type="url"
+          className={style.photo}
           id="photo"
           value={formData.photo}
           onChange={handleInputChange}
           required
         />
-        
+
         <div className={style.btnwrapper}>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={style.btn}
             disabled={loading}
           >
             {loading ? 'Сохранение...' : 'Сохранить'}
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={style.btn}
-            onClick={handleCancel}
+            onClick={() => navigate(-1)}
           >
             Отмена
           </button>

@@ -7,18 +7,18 @@
   background: white;
 }
 
-.header-logo {
+.headerLogo {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.logo-box {
+.logoBox {
   display: flex;
   gap: 8px;
 }
 
-.logo-box > img {
+.logoBox > img {
   width: 20px;
 }
 
@@ -28,12 +28,12 @@
   align-items: center;
 }
 
-.create-btn > span {
+.createBtn > span {
   font-size: 1.2rem;
   margin-right: 3px;
 }
 
-.header-content {
+.headerContent {
   width: 100%;
   display: flex;
   flex-direction: row;   
@@ -44,7 +44,7 @@
   border-top: 1px solid #eee;
 }
 
-.search-row {
+.searchRow {
   width: 70%;  
   position: relative;
 }
@@ -57,7 +57,7 @@
   margin-bottom: 0;
 }
 
-.search-row::before {
+.searchRow::before {
   content: "";
   position: absolute;
   background: url('/search-icon.png') no-repeat center;
@@ -69,7 +69,7 @@
   background-size: contain;
 }
 
-.filters-row {
+.filtersRow {
   width: 30%;
   display: flex;
   flex-direction: row;   
@@ -78,24 +78,29 @@
   flex-wrap: nowrap;     
 }
 
-.select-wrapper {
+.selectWrapper {
   width: 50%;
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.select-wrapper select option {
+.selectWrapper select option {
   color: #333;
 }
 
-.select-wrapper > select {
+.selectWrapper > select {
   outline: none;
   box-shadow: none;
 }
 
-.select-wrapper select,
-.datepicker-wrapper {
+.selectWrapper > select {
+  outline: none;
+  box-shadow: none;
+}
+
+.selectWrapper > select,
+.datepickerWrapper {
   width: 100%;
   appearance: none;
   padding: 10px 34px 10px 12px;
@@ -107,8 +112,8 @@
   color: #666; 
 }
 
-.datepicker-wrapper::after,
-.select-wrapper::after {
+.datepickerWrapper::after,
+.selectWrapper::after {
   content: '';
   position: absolute;
   right: 10px;
@@ -121,19 +126,19 @@
   pointer-events: none;
 }
 
-.select-wrapper:focus-within::after {
+.selectWrapper:focus-within::after {
   transform: translateY(-50%) rotate(90deg);
 }
 
-.select-wrapper:has(.react-datepicker__close-icon)::after {
+.selectWrapper:has(.react-datepicker__close-icon)::after {
   display: none;
 }
 
-.react-datepicker__close-icon::after {
+.reactDatepicker__close-icon::after {
   background: #999 !important;
 }
 
-.create-btn {
+.createBtn {
   display:flex;
   flex-direction: row;
   justify-content: center;
@@ -149,7 +154,7 @@
   margin-left: 12px;
 }
 
-.create-btn:hover {
+.createBtn:hover {
   background: #f5f5f5;
   border-color: #999;
 }
