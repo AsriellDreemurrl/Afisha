@@ -60,7 +60,7 @@ const Post = () => {
         <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>{message.text}</div>
       )}
       <button className={styles.backButton} onClick={() => navigate('/')}>
-        <span className={styles.backIcon}>&larr;</span> Назад к списку
+        <span className={styles.backIcon}>←</span> Назад к списку
       </button>
 
       <div className={styles.image}>
