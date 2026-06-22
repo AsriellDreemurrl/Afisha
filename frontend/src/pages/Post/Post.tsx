@@ -18,11 +18,9 @@ const Post = () => {
 
   useEffect(() => {
     if (id) {
-      console.log('Fetching post with id:', id)
       axios
-        .get(`http://localhost:3000/events/${id}`)
+        .get(`${import.meta.env.VITE_API_URL}/events/${id}`)
         .then((response) => {
-          console.log('Got response:', response.data)
           setEvent(response.data)
           setLoading(false)
         })
@@ -38,7 +36,7 @@ const Post = () => {
   const handleDelete = async () => {
     if (!id) return
     try {
-      await axios.delete(`http://localhost:3000/events/${id}`)
+      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${id}`)
       navigate('/', { state: { message: 'Событие успешно удалено', type: 'success' } })
 
     } catch (error) {
@@ -60,7 +58,7 @@ const Post = () => {
         <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>{message.text}</div>
       )}
       <button className={styles.backButton} onClick={() => navigate('/')}>
-        <span className={styles.backIcon}>&larr;</span> Назад к списку
+        <span className={styles.backIcon}>←</span> Назад к списку
       </button>
 
       <div className={styles.image}>

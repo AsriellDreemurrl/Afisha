@@ -42,7 +42,7 @@ const Editor = () => {
     if (!id) return
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/events/${id}`)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`)
         const event: AfishaEvent = response.data
         setFormData({
           name: event.name,
@@ -116,10 +116,10 @@ const Editor = () => {
       };
 
       if (id) {
-        await axios.put(`http://localhost:3000/events/${id}`, payload)
+        await axios.put(`${import.meta.env.VITE_API_URL}/events/${id}`, payload)
         navigate(`/post/${id}`)
       } else {
-        const response = await axios.post('http://localhost:3000/events', payload);
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, payload);
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
