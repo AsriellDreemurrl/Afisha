@@ -7,6 +7,7 @@ cd ../frontend
 npm install
 ```
 также рекоммендую сделать `npm install typescript@latest --save-dev` раз, если у вас ошибки в package.json
+создайте .env в корневой папке frontend с VITE_API_URL=http://localhost:3000
 Если у вас ошибка ниже, удалите файлы .tsbuildinfo в backend
 ```bash
 [3:38:18 PM] Starting compilation in watch mode...
