@@ -4,3 +4,19 @@
   gap: 40px;
   padding: 20px;
 }
+
+@media (max-width: 1024px) {
+  .list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 12px;
+  }
+}
