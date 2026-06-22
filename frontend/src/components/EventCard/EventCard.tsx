@@ -1,28 +1,35 @@
-import "./EventCard.css"
-import { Link } from "react-router-dom"
-import type { AfishaEvent } from "../../../../backend/src/events/events.store"
+import styles from "./EventCard.module.css"
+import  { useNavigate } from 'react-router-dom'
+import type { AfishaEvent } from "../../types/Event"
+import { formatDate } from "../../utils/dateUtils"
 
-type Props = {
-  event: AfishaEvent
-  onDelete: (id: number) => void
-}
-
-export default function EventCard({ event }: Props) {
+export default function EventCard({
+  id,
+  name,
+  location,
+  datetime,
+  price,
+  photo,
+  category
+}: AfishaEvent & { onDelete: (id: number) => void }) {
+  const navigate = useNavigate()
+  const handleClick = () => { navigate(`/post/${id}`) }
   return (
-    <div className="card">
-      <Link className="eventcard__link" to={`/events/${event.id}`}>
-        <img src={event.photo} alt={event.name} className="card-image" />
-        <div className="card-content">
-          <h3>{event.name}</h3>
-          <p className="card-info">
-            📅 {event.datetime} • 📍 {event.location}
-          </p>
-          <div className="card-footer">
-            <span className="category">{event.category}</span>
-            <span className="price">{event.price} c</span>
-          </div>
+    <div className={styles.card} onClick={handleClick}>
+      <img src={photo} alt={name} className={styles.cardImage} />
+
+      <div className={styles.cardContent}>
+        <h3>{name}</h3>
+
+        <p className={styles.cardInfo}>
+          📅 {formatDate(datetime)} • 📍 {location}
+        </p>
+
+        <div className={styles.cardFooter}>
+          <span className={styles.category}>{category}</span>
+          <span className={styles.price}>{price} c</span>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
