@@ -66,6 +66,7 @@ const Post = () => {
       </div>
 
       <div className={styles.content}>
+        <h1 className={styles.title}>{event.name}</h1>
         <p className={styles.description}>{event.description}</p>
         <span className={styles.category}>{event.category}</span>
       </div>
