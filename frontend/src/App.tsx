@@ -4,6 +4,10 @@ import Home from './pages/Home/Home'
 import Editor from './pages/Editor/Editor'
 import Post from './pages/Post/Post'
 
+// import { createUrl } from './utils/url';
+
+// console.log(createUrl('/events', { page: 1 }));
+
 function App() {
   return (
     <BrowserRouter>
