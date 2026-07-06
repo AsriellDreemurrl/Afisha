@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { EventEntity } from './events.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { FilterEventDto } from './dto/filter-event.dto';
 
 @Injectable()
 export class EventsService {
@@ -12,8 +13,15 @@ export class EventsService {
     private eventsRepository: Repository<EventEntity>,
   ) {}
 
-  findAll(): Promise<EventEntity[]> {
-    return this.eventsRepository.find();
+   async findAll(filterDto: FilterEventDto): Promise<EventEntity[]> {
+    const where: any = {};
+    if (filterDto.search) {
+      where.name = ILike(`%${filterDto.search}%`);
+    }
+    if (filterDto.category) {
+      where.category = filterDto.category;
+    }
+    return this.eventsRepository.find({where});
   }
 
   async findOne(id: number): Promise<EventEntity> {
