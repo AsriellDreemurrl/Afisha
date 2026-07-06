@@ -21,12 +21,14 @@ interface FormState {
   photo: string;
 }
 
+type FieldErrors = Partial<Record<keyof FormState | 'datetime', string>>;
+
 const Editor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   const [formData, setFormData] = useState<FormState>({
     name: '',
@@ -71,6 +73,14 @@ const Editor = () => {
       ...prev,
       [fieldName]: value
     }));
+
+    // Убираем ошибку у поля сразу после того, как пользователь начал его исправлять
+    setErrors(prev => {
+      if (!prev[fieldName]) return prev;
+      const updated = { ...prev };
+      delete updated[fieldName];
+      return updated;
+    });
   };
 
   const handleDateChange = (date: Date | null) => {
@@ -80,38 +90,76 @@ const Editor = () => {
         ...prev,
         datetime: date.toISOString()
       }));
+      setErrors(prev => {
+        if (!prev.datetime) return prev;
+        const updated = { ...prev };
+        delete updated.datetime;
+        return updated;
+      });
     }
+  };
+
+  const validate = (): FieldErrors => {
+    const newErrors: FieldErrors = {};
+    const priceNumber = Number(formData.price);
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Введите название события';
+    }
+
+    if (!formData.description.trim()) {
+      newErrors.description = 'Введите описание события';
+    }
+
+    if (!selectedDate) {
+      newErrors.datetime = 'Выберите дату и время';
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.location = 'Укажите место проведения';
+    }
+
+    if (!formData.category) {
+      newErrors.category = 'Выберите категорию';
+    }
+
+    if (formData.price.trim() === '' || Number.isNaN(priceNumber) || priceNumber < 0) {
+      newErrors.price = 'Укажите корректную цену';
+    }
+
+    if (!formData.photo.trim()) {
+      newErrors.photo = 'Добавьте ссылку на фото';
+    } else {
+      try {
+        new URL(formData.photo);
+      } catch {
+        newErrors.photo = 'Ссылка на фото должна быть корректным URL';
+      }
+    }
+
+    return newErrors;
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const priceNumber = Number(formData.price);
-    if (
-      !formData.name ||
-      !formData.description ||
-      !selectedDate ||
-      !formData.location ||
-      !formData.category ||
-      !formData.photo ||
-      formData.price.trim() === '' ||
-      Number.isNaN(priceNumber)
-    ) {
-      setError('Пожалуйста, заполните все поля правильными значениями');
+    const validationErrors = validate();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const payload: Omit<AfishaEvent, 'id'> = {
         name: formData.name,
         description: formData.description,
-        datetime: selectedDate.toISOString(),
+        datetime: selectedDate!.toISOString(),
         location: formData.location,
         category: formData.category,
-        price: priceNumber,
+        price: Number(formData.price),
         photo: formData.photo,
       };
 
@@ -124,7 +172,6 @@ const Editor = () => {
       }
     } catch (err) {
       console.error('Error saving event:', err);
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
       setLoading(false);
     }
   };
@@ -133,27 +180,25 @@ const Editor = () => {
     <div className={style.container}>
       <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
 
-      {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
-
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSave} noValidate>
         <label htmlFor="name" className={style.label}>Название</label>
         <input
           type="text"
-          className={style.title}
+          className={errors.name ? `${style.title} ${style.inputError}` : style.title}
           id="name"
           value={formData.name}
           onChange={handleInputChange}
-          required
         />
+        {errors.name && <span className={style.errorText}>{errors.name}</span>}
 
         <label htmlFor="description" className={style.label}>Описание</label>
         <textarea
-          className={style.description}
+          className={errors.description ? `${style.description} ${style.inputError}` : style.description}
           id="description"
           value={formData.description}
           onChange={handleInputChange}
-          required
         />
+        {errors.description && <span className={style.errorText}>{errors.description}</span>}
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
@@ -165,19 +210,20 @@ const Editor = () => {
               onChange={handleDateChange}
               showTimeSelect
               dateFormat="Pp"
-              required
+              className={errors.datetime ? style.inputError : ''}
             />
+            {errors.datetime && <span className={style.errorText}>{errors.datetime}</span>}
           </div>
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
             <input
               type="text"
-              className={style.aboutinp}
+              className={errors.location ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
               id="location"
               value={formData.location}
               onChange={handleInputChange}
-              required
             />
+            {errors.location && <span className={style.errorText}>{errors.location}</span>}
           </div>
         </div>
 
@@ -185,11 +231,10 @@ const Editor = () => {
           <div className={style.input_group}>
             <label htmlFor="category" className={style.label}>Категория</label>
             <select
-              className={style.aboutinp}
+              className={errors.category ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
               id="category"
               value={formData.category}
               onChange={handleInputChange}
-              required
             >
               <option value="" disabled>Выберите</option>
               <option value="Концерт">Концерт</option>
@@ -198,29 +243,30 @@ const Editor = () => {
               <option value="Выставка">Выставка</option>
               <option value="Другое">Другое</option>
             </select>
+            {errors.category && <span className={style.errorText}>{errors.category}</span>}
           </div>
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
             <input
               type="number"
-              className={style.aboutinp}
+              className={errors.price ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
               id="price"
               value={formData.price}
               onChange={handleInputChange}
-              required
             />
+            {errors.price && <span className={style.errorText}>{errors.price}</span>}
           </div>
         </div>
 
         <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
         <input
           type="url"
-          className={style.photo}
+          className={errors.photo ? `${style.photo} ${style.inputError}` : style.photo}
           id="photo"
           value={formData.photo}
           onChange={handleInputChange}
-          required
         />
+        {errors.photo && <span className={style.errorText}>{errors.photo}</span>}
 
         <div className={style.btnwrapper}>
           <button

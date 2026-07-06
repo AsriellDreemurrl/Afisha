@@ -170,3 +170,25 @@ select.aboutinp {
   display: flex;
   flex-direction: column;
 }
+
+
+
+.inputError {
+  border: 1px solid #e34d4d !important;
+  background: #fdf1f1 !important;
+}
+
+.inputError:focus {
+  border-color: #e34d4d !important;
+  box-shadow: 0 0 0 3px rgba(227, 77, 77, 0.15) !important;
+  background: #fdf1f1 !important;
+}
+
+.errorText {
+  color: #e34d4d;
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+}
+
+
