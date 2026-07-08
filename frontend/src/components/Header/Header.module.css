@@ -15,7 +15,15 @@
 
 .logoBox {
   display: flex;
+  align-items: center;
   gap: 8px;
+  color: #333;
+  text-decoration: none;
+}
+
+.logoBox:hover {
+  color: #3e3e3ee5;
+  text-decoration: none;
 }
 
 .logoBox > img {
