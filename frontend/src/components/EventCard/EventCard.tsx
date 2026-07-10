@@ -1,7 +1,7 @@
-import styles from "./EventCard.module.css"
-import  { useNavigate } from 'react-router-dom'
-import type { AfishaEvent } from "../../types/Event"
-import { formatDate } from "../../utils/dateUtils"
+import styles from './EventCard.module.css';
+import { useNavigate } from 'react-router-dom';
+import type { AfishaEvent } from '../../types/Event';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function EventCard({
   id,
@@ -10,10 +10,12 @@ export default function EventCard({
   datetime,
   price,
   photo,
-  category
+  category,
 }: AfishaEvent & { onDelete: (id: number) => void }) {
-  const navigate = useNavigate()
-  const handleClick = () => { navigate(`/post/${id}`) }
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/post/${id}`);
+  };
   return (
     <div className={styles.card} onClick={handleClick}>
       <img src={photo} alt={name} className={styles.cardImage} />
@@ -31,5 +33,5 @@ export default function EventCard({
         </div>
       </div>
     </div>
-  )
+  );
 }

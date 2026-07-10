@@ -1,61 +1,70 @@
-import styles from './Post.module.css'
-import clsx from 'clsx'
-import axios from 'axios'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import type { AfishaEvent } from '../../types/Event'
-import { formatDate } from '../../utils/dateUtils'
+import styles from './Post.module.css';
+import clsx from 'clsx';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import type { AfishaEvent } from '../../types/Event';
+import { formatDate } from '../../utils/dateUtils';
 
 const Post = () => {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const [event, setEvent] = useState<AfishaEvent | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [event, setEvent] = useState<AfishaEvent | null>(null);
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
 
   useEffect(() => {
     if (id) {
       axios
         .get(`${import.meta.env.VITE_API_URL}/events/${id}`)
         .then((response) => {
-          setEvent(response.data)
-          setLoading(false)
+          setEvent(response.data);
+          setLoading(false);
         })
         .catch((error) => {
-          console.log('Ошибка загрузки события:', error)
-          setLoading(false)
-        })
+          console.log('Ошибка загрузки события:', error);
+          setLoading(false);
+        });
     }
-  }, [id])
-  if (loading) return <div className={styles.container}>Загрузка...</div>
-  if (!event) return <div className={styles.container}>Событие не найдено</div>
+  }, [id]);
+  if (loading) return <div className={styles.container}>Загрузка...</div>;
+  if (!event) return <div className={styles.container}>Событие не найдено</div>;
 
   const handleDelete = async () => {
-    if (!id) return
+    if (!id) return;
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${id}`)
-      navigate('/', { state: { message: 'Событие успешно удалено', type: 'success' } })
-
+      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${id}`);
+      navigate('/', {
+        state: { message: 'Событие успешно удалено', type: 'success' },
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
       setMessage({
         type: 'error',
         text: 'Не удалось удалить событие',
-      })
+      });
       setTimeout(() => {
-        setMessage(null)
-      }, 2500)
+        setMessage(null);
+      }, 2500);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
       {message && (
-        <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>{message.text}</div>
+        <div
+          className={
+            message.type === 'success'
+              ? styles.successMessage
+              : styles.errorMessage
+          }
+        >
+          {message.text}
+        </div>
       )}
       <button className={styles.backButton} onClick={() => navigate('/')}>
         <span className={styles.backIcon}>←</span> Назад к списку
@@ -73,7 +82,11 @@ const Post = () => {
 
       <div className={styles.info}>
         <div className={styles.infoRow}>
-          <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
+          <img
+            src="/calendar-icon.svg"
+            alt="icon"
+            className={styles.infoIcon}
+          />
           <p className={styles.date}>{formatDate(event.datetime)}</p>
         </div>
 
@@ -89,18 +102,24 @@ const Post = () => {
       </div>
 
       <div className={styles.actions}>
-        <button className={clsx(styles.btnAction, styles.btnEdit)} onClick={() => navigate(`/editor/${event.id}`)}>
+        <button
+          className={clsx(styles.btnAction, styles.btnEdit)}
+          onClick={() => navigate(`/editor/${event.id}`)}
+        >
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />
           Редактировать
         </button>
 
-        <button className={clsx(styles.btnAction, styles.btnDelete)} onClick={handleDelete}>
+        <button
+          className={clsx(styles.btnAction, styles.btnDelete)}
+          onClick={handleDelete}
+        >
           <img src="/trash-icon.svg" alt="" className={styles.infoIcon} />
           Удалить
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;

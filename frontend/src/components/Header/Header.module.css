@@ -4,7 +4,7 @@
   gap: 14px;
   padding: 16px 20px;
   border-bottom: 1px solid #eee;
-  background: white;
+  background: var(--color-bg);
 }
 
 .headerLogo {
@@ -36,30 +36,30 @@
 .headerContent {
   width: 100%;
   display: flex;
-  flex-direction: row;   
+  flex-direction: row;
   align-items: center;
   gap: 12px;
-  flex-wrap: nowrap;  
+  flex-wrap: nowrap;
   padding-top: 16px;
   border-top: 1px solid #eee;
 }
 
 .searchRow {
-  width: 70%;  
+  width: 70%;
   position: relative;
 }
 
-.search {  
+.search {
   width: 100%;
   padding: 10px 30px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   margin-bottom: 0;
-  background: #f1f5f9d6;
+  background: var(--color-primary);
 }
 
 .searchRow::before {
-  content: "";
+  content: '';
   position: absolute;
   background: url('/search-icon.png') no-repeat center;
   width: 15px;
@@ -73,10 +73,10 @@
 .filtersRow {
   width: 30%;
   display: flex;
-  flex-direction: row;   
+  flex-direction: row;
   align-items: center;
   gap: 12px;
-  flex-wrap: nowrap;     
+  flex-wrap: nowrap;
 }
 
 .selectWrapper {
@@ -94,27 +94,27 @@
   width: 100%;
   appearance: none;
   padding: 10px 34px 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: white;  
+  background: white;
   position: relative;
   margin: 0;
   outline: none;
   box-shadow: none;
-  background: #f1f5f9d6;
+  background: var(--color-primary);
 }
 
 .datepickerWrapper {
   width: 100%;
   appearance: none;
   padding: 10px 34px 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: white;  
+  background: white;
   position: relative;
   margin: 0;
-  color: #666; 
-  background: #f1f5f9d6;
+  color: #666;
+  background: var(--color-primary);
 }
 
 .datepickerWrapper::after,
@@ -144,16 +144,16 @@
 }
 
 .createBtn {
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center; 
-  background: #f1f5f9d6;
+  align-items: center;
+  background: var(--color-primary);
   color: #333;
   border: 1px solid #ccc;
   padding: 8px 22px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: var(--font-size-3);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-left: 12px;

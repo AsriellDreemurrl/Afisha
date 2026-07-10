@@ -1,19 +1,26 @@
-import styles from './Header.module.css'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import { useNavigate } from "react-router-dom"
+import styles from './Header.module.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
-  search: string
-  setSearch: (value: string) => void
-  category: string
-  setCategory: (value: string) => void
-  date: string
-  setDate: (value: string) => void
-}
+  search: string;
+  setSearch: (value: string) => void;
+  category: string;
+  setCategory: (value: string) => void;
+  date: string;
+  setDate: (value: string) => void;
+};
 
-const Header = ({ search, setSearch, category, setCategory, date, setDate }: Props) => {
-  const navigate = useNavigate()
+const Header = ({
+  search,
+  setSearch,
+  category,
+  setCategory,
+  date,
+  setDate,
+}: Props) => {
+  const navigate = useNavigate();
 
   return (
     <div className={styles.header}>
@@ -22,7 +29,10 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
           <img title="Афиша" src="/calendar-icon.svg" />
           <h2 className={styles.logo}>Афиша</h2>
         </div>
-        <button className={styles.createBtn} onClick={() => navigate('/editor')}>
+        <button
+          className={styles.createBtn}
+          onClick={() => navigate('/editor')}
+        >
           <span>+</span>Создать
         </button>
       </div>
@@ -33,7 +43,7 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
             className={styles.search}
             placeholder="Поиск по названию"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
@@ -41,10 +51,11 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
           <div className={styles.selectWrapper}>
             <select
               value={category === '' ? 'all' : category}
-              onChange={e => {
-                setCategory(e.target.value === 'all' ? '' : e.target.value)
-                e.target.blur()
-              }}>
+              onChange={(e) => {
+                setCategory(e.target.value === 'all' ? '' : e.target.value);
+                e.target.blur();
+              }}
+            >
               <option value="" disabled hidden>
                 Категория
               </option>
@@ -60,8 +71,10 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
               className={styles.datepickerWrapper}
               selected={date ? new Date(date) : null}
               onChange={(selectedDate: Date | null) => {
-                setDate(selectedDate ? selectedDate.toLocaleDateString('en-CA') : '')
-                  ; (document.activeElement as HTMLElement)?.blur()
+                setDate(
+                  selectedDate ? selectedDate.toLocaleDateString('en-CA') : '',
+                );
+                (document.activeElement as HTMLElement)?.blur();
               }}
               placeholderText="Дата"
               dateFormat="dd.MM.yyyy"
@@ -71,7 +84,7 @@ const Header = ({ search, setSearch, category, setCategory, date, setDate }: Pro
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

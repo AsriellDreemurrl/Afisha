@@ -1,24 +1,25 @@
 .container {
-  max-width: 800px; 
+  max-width: 800px;
   margin: 30px auto;
   padding: 32px;
   background-color: #f1f5f9d6;
-  border-radius: 12px; 
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
-
 
 .backButton {
   background: none;
   border: none;
   color: #6b7280;
-  font-size: 14px;
+  font-size: var(--font-size-4);
   font-weight: 500;
   cursor: pointer;
-  display: inline-flex; 
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 24px; 
+  margin-bottom: 24px;
   padding: 4px 0;
   transition: color 0.2s ease;
 }
@@ -30,16 +31,15 @@
 .backIcon {
   display: inline-flex;
   align-items: center;
-  font-size: 18px;        
-  transform: translateY(-2px); 
+  font-size: var(--font-size-5);
+  transform: translateY(-2px);
 }
-
 
 .image {
   max-width: 100%;
-  max-height: 200px; 
-  background-color: #f9fafb; 
-  border: 1px dashed #cbd5e1; 
+  max-height: 200px;
+  background-color: #f9fafb;
+  border: 1px dashed #cbd5e1;
   border-radius: 8px;
   margin-bottom: 24px;
   display: flex;
@@ -62,45 +62,44 @@
 }
 
 .title {
-  font-size: 24px;
+  font-size: var(--font-size-6);
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 8px;
 }
 .description {
-  font-size: 15px; 
-  font-weight: 700; 
-  color: #111827; 
+  font-size: var(--font-size-4);
+  font-weight: 700;
+  color: #111827;
   margin: 0;
   line-height: 1.4;
 }
 
 .category {
-  background-color: #f3f4f6; 
+  background-color: #f3f4f6;
   color: #4b5563;
   padding: 6px 12px;
-  border-radius: 9999px; 
-  font-size: 12px;
+  border-radius: 9999px;
+  font-size: var(--font-size-3);
   font-weight: 600;
-  text-transform: uppercase; 
-  letter-spacing: 0.05em; 
-  white-space: nowrap; 
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
-
 
 .info {
   display: flex;
-  flex-direction: column; 
-  gap: 12px; 
-  margin-bottom: 32px;    
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .infoRow {
-  display: flex;          
-  align-items: center;    
-  gap: 12px; 
+  display: flex;
+  align-items: center;
+  gap: 12px;
   color: #4b5563;
-  font-size: 15px;
+  font-size: var(--font-size-4);
 }
 
 .infoRow p {
@@ -109,13 +108,12 @@
 }
 
 .infoIcon {
-  width: 18px; 
+  width: 18px;
   height: 18px;
   object-fit: contain;
-  flex-shrink: 0; 
+  flex-shrink: 0;
   opacity: 0.8;
 }
-
 
 .actions {
   display: flex;
@@ -131,14 +129,13 @@
   border: none;
   padding: 10px 18px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: var(--font-size-3);
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .btnEdit {
- 
   background-color: #3b82f6;
   color: white;
 }
@@ -148,7 +145,6 @@
 }
 
 .btnDelete {
- 
   background-color: #ef4444;
   color: white;
 }
@@ -156,7 +152,6 @@
 .btnDelete:hover {
   background-color: #dc2626;
 }
-
 
 .btnAction .infoIcon {
   width: 16px;

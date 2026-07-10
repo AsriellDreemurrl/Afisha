@@ -1,24 +1,19 @@
-import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import style from "./Editor.module.css"
+import { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import style from './Editor.module.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { AfishaEvent } from "../../types/Event";
+import type { AfishaEvent, Category } from '../../types/Event';
 import axios from 'axios';
-import { parseDate } from "../../utils/dateUtils";
+import { parseDate } from '../../utils/dateUtils';
 
 registerLocale('ru', ru);
 
-interface FormState {
-  name: string;
-  description: string;
-  datetime: string;
-  location: string;
-  category: '' | 'Концерт' | 'Лекция' | 'Спорт' | 'Выставка' | 'Другое';
+type FormState = Omit<AfishaEvent, 'id' | 'price' | 'category'> & {
   price: string;
-  photo: string;
+  category: Category;
 }
 
 const Editor = () => {
@@ -35,15 +30,17 @@ const Editor = () => {
     location: '',
     category: '',
     price: '',
-    photo: ''
+    photo: '',
   });
 
   useEffect(() => {
-    if (!id) return
+    if (!id) return;
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`)
-        const event: AfishaEvent = response.data
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+        );
+        const event: AfishaEvent = response.data;
         setFormData({
           name: event.name,
           description: event.description,
@@ -52,33 +49,37 @@ const Editor = () => {
           category: event.category as FormState['category'],
           price: String(event.price),
           photo: event.photo,
-        })
+        });
         if (event.datetime) {
-          const parsed = parseDate(event.datetime)
-          if(parsed) setSelectedDate(parsed)
+          const parsed = parseDate(event.datetime);
+          if (parsed) setSelectedDate(parsed);
         }
       } catch (error) {
-        console.error('Ошибка загрузки:', error)
+        console.error('Ошибка загрузки:', error);
       }
-    }
-    fetchEvent()
-  }, [id])
+    };
+    fetchEvent();
+  }, [id]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { id, value } = e.target;
     const fieldName = id as keyof FormState;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [fieldName]: value
+      [fieldName]: value,
     }));
   };
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     if (date instanceof Date) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        datetime: date.toISOString()
+        datetime: date.toISOString(),
       }));
     }
   };
@@ -116,27 +117,43 @@ const Editor = () => {
       };
 
       if (id) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/events/${id}`, payload)
-        navigate(`/post/${id}`)
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+          payload,
+        );
+        navigate(`/post/${id}`);
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, payload);
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/events`,
+          payload,
+        );
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
       console.error('Error saving event:', err);
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Произошла ошибка при сохранении события',
+      );
       setLoading(false);
     }
   };
 
   return (
     <div className={style.container}>
-      <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
+      <h1 className={style.name}>
+        {id ? 'Редактировать событие' : 'Новое событие'}
+      </h1>
 
-      {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
+      {error && (
+        <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>
+      )}
 
       <form onSubmit={handleSave}>
-        <label htmlFor="name" className={style.label}>Название</label>
+        <label htmlFor="name" className={style.label}>
+          Название
+        </label>
         <input
           type="text"
           className={style.title}
@@ -146,7 +163,9 @@ const Editor = () => {
           required
         />
 
-        <label htmlFor="description" className={style.label}>Описание</label>
+        <label htmlFor="description" className={style.label}>
+          Описание
+        </label>
         <textarea
           className={style.description}
           id="description"
@@ -157,7 +176,9 @@ const Editor = () => {
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
-            <label htmlFor="datetime" className={style.label}>Дата и время</label>
+            <label htmlFor="datetime" className={style.label}>
+              Дата и время
+            </label>
             <DatePicker
               id="datetime"
               locale="ru"
@@ -169,7 +190,9 @@ const Editor = () => {
             />
           </div>
           <div className={style.input_group}>
-            <label htmlFor="location" className={style.label}>Место</label>
+            <label htmlFor="location" className={style.label}>
+              Место
+            </label>
             <input
               type="text"
               className={style.aboutinp}
@@ -183,7 +206,9 @@ const Editor = () => {
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
-            <label htmlFor="category" className={style.label}>Категория</label>
+            <label htmlFor="category" className={style.label}>
+              Категория
+            </label>
             <select
               className={style.aboutinp}
               id="category"
@@ -191,7 +216,9 @@ const Editor = () => {
               onChange={handleInputChange}
               required
             >
-              <option value="" disabled>Выберите</option>
+              <option value="" disabled>
+                Выберите
+              </option>
               <option value="Концерт">Концерт</option>
               <option value="Лекция">Лекция</option>
               <option value="Спорт">Спорт</option>
@@ -200,7 +227,9 @@ const Editor = () => {
             </select>
           </div>
           <div className={style.input_group}>
-            <label htmlFor="price" className={style.label}>Цена</label>
+            <label htmlFor="price" className={style.label}>
+              Цена
+            </label>
             <input
               type="number"
               className={style.aboutinp}
@@ -212,7 +241,9 @@ const Editor = () => {
           </div>
         </div>
 
-        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+        <label htmlFor="photo" className={style.label}>
+          Ссылка на фото
+        </label>
         <input
           type="url"
           className={style.photo}
@@ -223,11 +254,7 @@ const Editor = () => {
         />
 
         <div className={style.btnwrapper}>
-          <button
-            type="submit"
-            className={style.btn}
-            disabled={loading}
-          >
+          <button type="submit" className={style.btn} disabled={loading}>
             {loading ? 'Сохранение...' : 'Сохранить'}
           </button>
           <button
@@ -240,7 +267,7 @@ const Editor = () => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;
