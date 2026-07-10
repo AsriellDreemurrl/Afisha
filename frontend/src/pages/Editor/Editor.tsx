@@ -74,7 +74,7 @@ const Editor = () => {
       [fieldName]: value
     }));
 
-    // Убираем ошибку у поля сразу после того, как пользователь начал его исправлять
+    
     setErrors(prev => {
       if (!prev[fieldName]) return prev;
       const updated = { ...prev };
