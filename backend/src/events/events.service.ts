@@ -1,33 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import { AfishaEvent, events } from './events.store';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { EventEntity } from './events.entity';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventsService {
-  findAll(): AfishaEvent[] {
-    return events;
+  constructor(
+    @InjectRepository(EventEntity)
+    private eventsRepository: Repository<EventEntity>,
+  ) {}
+
+  findAll(): Promise<EventEntity[]> {
+    return this.eventsRepository.find();
   }
 
-  findOne(id: number): AfishaEvent | undefined {
-    return events.find((event) => event.id === id);
-  }
-
-  create(event: AfishaEvent): AfishaEvent {
-    event.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
-    events.push(event);
+  async findOne(id: number): Promise<EventEntity> {
+    const event = await this.eventsRepository.findOne({ where: { id } });
+    if (!event) throw new NotFoundException(`Событие ${id} не найдено`);
     return event;
   }
 
-  update(id: number, updated: AfishaEvent): AfishaEvent | undefined {
-    const index = events.findIndex((event) => event.id === id);
-    if (index === -1) return undefined;
-    events[index] = { ...updated, id };
-    return events[index];
+  create(dto: CreateEventDto): Promise<EventEntity> {
+    const event = this.eventsRepository.create(dto);
+    return this.eventsRepository.save(event);
   }
 
-  remove(id: number): boolean {
-    const index = events.findIndex((event) => event.id === id);
-    if (index === -1) return false;
-    events.splice(index, 1);
-    return true;
+  async update(id: number, dto: UpdateEventDto): Promise<EventEntity> {
+    await this.findOne(id);
+    await this.eventsRepository.update(id, dto);
+    return this.findOne(id);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.findOne(id);
+    await this.eventsRepository.delete(id);
   }
 }
