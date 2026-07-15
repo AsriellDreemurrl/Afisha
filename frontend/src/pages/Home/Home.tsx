@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import EventList from '../../components/EventList/EventList'
 
-//generics, memoization, use .envm standardize, better to make pages always export from components, not components export from pages, make many things global such as * and contanier in css, really don't use variables from back, make interface AfishaEvent global and make everyone use it instead of declaring another one
 import type { AfishaEvent } from '../../types/Event'
 
 import styles from './Home.module.css'
@@ -25,8 +24,13 @@ const Home = () => {
   }, [location.state])
 
   useEffect(() => {
+    const params: Record<string, string> = {};
+    if (search) params.search = search;
+    if (category) params.category = category;
+    if (date) params.date = date;
+
     axios
-      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`)
+      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`, { params })
       .then((response) => {
         setEvents(response.data);
       })
@@ -64,6 +68,6 @@ const Home = () => {
       )}
     </div>
   );
-}
+};
 
 export default Home;
