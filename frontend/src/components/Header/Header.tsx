@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 
 const Header = () => {
-   const {
+  const {
     search,
     setSearch,
     category,
@@ -67,7 +67,7 @@ const Header = () => {
                 selected={date ? new Date(date) : null}
                 onChange={(selectedDate: Date | null) => {
                   setDate(selectedDate ? selectedDate.toLocaleDateString('en-CA') : '')
-                  ; (document.activeElement as HTMLElement)?.blur()
+                  ;(document.activeElement as HTMLElement)?.blur()
                 }}
                 placeholderText="Дата"
                 dateFormat="dd.MM.yyyy"

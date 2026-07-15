@@ -24,20 +24,20 @@ const Home = () => {
   }, [location.state])
 
   useEffect(() => {
-    const params: Record<string, string> = {};
-    if (search) params.search = search;
-    if (category) params.category = category;
-    if (date) params.date = date;
+    const params: Record<string, string> = {}
+    if (search) params.search = search
+    if (category) params.category = category
+    if (date) params.date = date
 
     axios
       .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`, { params })
       .then((response) => {
-        setEvents(response.data);
+        setEvents(response.data)
       })
       .catch((error) => {
-        console.error("Ошибка при получении данных:", error);
-      });
-  }, []);
+        console.error('Ошибка при получении данных:', error)
+      })
+  }, [])
 
   const filteredEvents = useMemo(() => {
     return (events || []).filter(event => {
@@ -45,13 +45,14 @@ const Home = () => {
         event.name?.toLowerCase().includes(search.toLowerCase()) ||
         event.description?.toLowerCase().includes(search.toLowerCase())
 
-    const matchesCategory = category && category !== 'all'
-      ? event.category === category
-      : true
+      const matchesCategory =
+        category && category !== 'all' ? event.category === category : true
 
-    const matchesDate = date
-      ? parseDate(event.datetime)?.toISOString().startsWith(date)
-      : true
+      const matchesDate = (() => {
+        if (!date) return true
+        if (!event.datetime) return false
+        return parseDate(event.datetime)?.toISOString().startsWith(date) ?? false
+      })()
 
       return matchesSearch && matchesCategory && matchesDate
     })
@@ -67,7 +68,7 @@ const Home = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

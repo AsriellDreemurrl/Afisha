@@ -5,15 +5,15 @@ import style from "./Editor.module.css";
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { AfishaEvent } from "../../types/Event";
+import type { AfishaEvent } from '../../types/Event';
 import axios from 'axios';
-import { parseDate } from "../../utils/dateUtils";
-
+import { parseDate } from '../../utils/dateUtils';
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 registerLocale('ru', ru);
+
 const schema = yup.object().shape({
   name: yup.string().required('Название обязательно для заполнения'),
   description: yup.string().required('Описание обязательно для заполнения'),
@@ -90,7 +90,6 @@ const Editor = () => {
     fetchEvent();
   }, [id, setValue]);
 
-
   const onSubmit = async (data: FormInputs) => {
     setLoading(true);
     setServerError(null);
@@ -122,22 +121,12 @@ const Editor = () => {
       {serverError && <div style={{ color: 'red', marginBottom: '16px' }}>{serverError}</div>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-
         <label htmlFor="name" className={style.label}>Название</label>
-        <input
-          type="text"
-          className={style.title}
-          id="name"
-          {...register('name')}
-        />
+        <input type="text" className={style.title} id="name" {...register('name')} />
         {errors.name && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.name.message}</div>}
 
         <label htmlFor="description" className={style.label}>Описание</label>
-        <textarea
-          className={style.description}
-          id="description"
-          {...register('description')}
-        />
+        <textarea className={style.description} id="description" {...register('description')} />
         {errors.description && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.description.message}</div>}
 
         <div className={style.aboutinp_wrapper}>
@@ -162,12 +151,7 @@ const Editor = () => {
 
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
-            <input
-              type="text"
-              className={style.aboutinp}
-              id="location"
-              {...register('location')}
-            />
+            <input type="text" className={style.aboutinp} id="location" {...register('location')} />
             {errors.location && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.location.message}</div>}
           </div>
         </div>
@@ -175,12 +159,7 @@ const Editor = () => {
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
             <label htmlFor="category" className={style.label}>Категория</label>
-            <select
-              className={style.aboutinp}
-              id="category"
-              {...register('category')}
-              defaultValue=""
-            >
+            <select className={style.aboutinp} id="category" {...register('category')} defaultValue="">
               <option value="" disabled>Выберите</option>
               <option value="Концерт">Концерт</option>
               <option value="Лекция">Лекция</option>
@@ -193,38 +172,20 @@ const Editor = () => {
 
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
-            <input
-              type="number"
-              className={style.aboutinp}
-              id="price"
-              {...register('price')}
-            />
+            <input type="number" className={style.aboutinp} id="price" {...register('price')} />
             {errors.price && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.price.message}</div>}
           </div>
         </div>
 
         <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input
-          type="url"
-          className={style.photo}
-          id="photo"
-          {...register('photo')}
-        />
+        <input type="url" className={style.photo} id="photo" {...register('photo')} />
         {errors.photo && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.photo.message}</div>}
 
         <div className={style.btnwrapper}>
-          <button
-            type="submit"
-            className={style.btn}
-            disabled={loading}
-          >
+          <button type="submit" className={style.btn} disabled={loading}>
             {loading ? 'Сохранение...' : 'Сохранить'}
           </button>
-          <button
-            type="button"
-            className={style.btn}
-            onClick={() => navigate(-1)}
-          >
+          <button type="button" className={style.btn} onClick={() => navigate(-1)}>
             Отмена
           </button>
         </div>
