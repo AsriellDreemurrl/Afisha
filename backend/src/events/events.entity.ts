@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, } from "typeorm";
 @Entity('events')
 export class EventEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
     @Column()
   name!: string;
 
