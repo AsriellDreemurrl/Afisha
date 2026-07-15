@@ -68,14 +68,14 @@ const Editor = () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`);
         const event: AfishaEvent = response.data;
-        
+
         setValue('name', event.name);
         setValue('description', event.description);
         setValue('location', event.location);
         setValue('category', event.category as FormInputs['category']);
         setValue('price', event.price);
         setValue('photo', event.photo);
-        
+
         if (event.datetime) {
           const parsed = parseDate(event.datetime);
           if (parsed) {
@@ -122,7 +122,7 @@ const Editor = () => {
       {serverError && <div style={{ color: 'red', marginBottom: '16px' }}>{serverError}</div>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        
+
         <label htmlFor="name" className={style.label}>Название</label>
         <input
           type="text"
@@ -159,7 +159,7 @@ const Editor = () => {
             />
             {errors.datetime && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.datetime.message}</div>}
           </div>
-          
+
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
             <input
@@ -190,7 +190,7 @@ const Editor = () => {
             </select>
             {errors.category && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.category.message}</div>}
           </div>
-          
+
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
             <input
