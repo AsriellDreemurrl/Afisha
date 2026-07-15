@@ -28,18 +28,7 @@ function buildQueryString(params?: QueryParams): string {
   return query ? `?${query}` : '';
 }
 
-/**
- * Создаёт URL на основе base и объекта params.
- * Если base не передан — берётся VITE_API_BASE_URL из .env.
- *
- * @example
- * createUrl('/events', { page: 1, active: true })
- * // -> "http://localhost:3000/api/events?page=1&active=true"
- *
- * @example
- * createUrl('http://external.com/resource', { id: 5 })
- * // -> "http://external.com/resource?id=5"
- */
+
 export function createUrl(base: string, params?: QueryParams): string {
   const isAbsolute = /^https?:\/\//i.test(base);
   const resolvedBase = isAbsolute
