@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_BASE_URL}/events`)
+      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`)
       .then((response) => {
         setEvents(response.data);
       })
