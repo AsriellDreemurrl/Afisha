@@ -1,18 +1,10 @@
-/**
- * Утилита для построения URL (frontend, Vite).
- *
- * Базовый адрес API берётся из переменной окружения VITE_API_BASE_URL
- * (задаётся в .env, например: VITE_API_BASE_URL=http://localhost:3000/api)
- */
+
 
 export type QueryParams = Record<string, string | number | boolean | undefined | null>;
 
 const DEFAULT_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '';
 
-/**
- * Собирает query-строку из объекта параметров.
- * undefined/null значения пропускаются.
- */
+
 function buildQueryString(params?: QueryParams): string {
   if (!params) return '';
 
