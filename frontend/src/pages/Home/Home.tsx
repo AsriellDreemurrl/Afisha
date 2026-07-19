@@ -5,11 +5,11 @@ import axios from "axios";
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 
-
 import type { AfishaEvent } from "../../types/Event";
 
 import styles from "./Home.module.css";
 import { parseDate } from "../../utils/dateUtils";
+import { createUrl } from "../../utils/url";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_BASE_URL}/events`)
+      .get<AfishaEvent[]>(createUrl('/events'))
       .then((response) => {
         setEvents(response.data);
       })

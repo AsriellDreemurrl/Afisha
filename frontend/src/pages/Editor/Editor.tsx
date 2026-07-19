@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { AfishaEvent } from "../../types/Event";
 import axios from 'axios';
 import { parseDate } from "../../utils/dateUtils";
+import { createUrl } from "../../utils/url";
 
 registerLocale('ru', ru);
 
@@ -44,7 +45,7 @@ const Editor = () => {
     if (!id) return
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`)
+        const response = await axios.get(createUrl(`/events/${id}`))
         const event: AfishaEvent = response.data
         setFormData({
           name: event.name,
@@ -74,7 +75,6 @@ const Editor = () => {
       [fieldName]: value
     }));
 
-    
     setErrors(prev => {
       if (!prev[fieldName]) return prev;
       const updated = { ...prev };
@@ -164,10 +164,10 @@ const Editor = () => {
       };
 
       if (id) {
-        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, payload)
+        await axios.put(createUrl(`/events/${id}`), payload)
         navigate(`/post/${id}`)
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/events`, payload);
+        const response = await axios.post(createUrl('/events'), payload);
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
@@ -181,24 +181,28 @@ const Editor = () => {
       <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
 
       <form onSubmit={handleSave} noValidate>
-        <label htmlFor="name" className={style.label}>Название</label>
-        <input
-          type="text"
-          className={errors.name ? `${style.title} ${style.inputError}` : style.title}
-          id="name"
-          value={formData.name}
-          onChange={handleInputChange}
-        />
-        {errors.name && <span className={style.errorText}>{errors.name}</span>}
+        <div className={style.field}>
+          <label htmlFor="name" className={style.label}>Название</label>
+          <input
+            type="text"
+            className={errors.name ? `${style.title} ${style.inputError}` : style.title}
+            id="name"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
+          {errors.name && <span className={`${style.errorText} ${style.errorTextName}`}>{errors.name}</span>}
+        </div>
 
-        <label htmlFor="description" className={style.label}>Описание</label>
-        <textarea
-          className={errors.description ? `${style.description} ${style.inputError}` : style.description}
-          id="description"
-          value={formData.description}
-          onChange={handleInputChange}
-        />
-        {errors.description && <span className={style.errorText}>{errors.description}</span>}
+        <div className={style.field}>
+          <label htmlFor="description" className={style.label}>Описание</label>
+          <textarea
+            className={errors.description ? `${style.description} ${style.inputError}` : style.description}
+            id="description"
+            value={formData.description}
+            onChange={handleInputChange}
+          />
+          {errors.description && <span className={`${style.errorText} ${style.errorTextDescription}`}>{errors.description}</span>}
+        </div>
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
@@ -212,7 +216,7 @@ const Editor = () => {
               dateFormat="Pp"
               className={errors.datetime ? style.inputError : ''}
             />
-            {errors.datetime && <span className={style.errorText}>{errors.datetime}</span>}
+            {errors.datetime && <span className={`${style.errorText} ${style.errorTextDatetime}`}>{errors.datetime}</span>}
           </div>
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
@@ -223,7 +227,7 @@ const Editor = () => {
               value={formData.location}
               onChange={handleInputChange}
             />
-            {errors.location && <span className={style.errorText}>{errors.location}</span>}
+            {errors.location && <span className={`${style.errorText} ${style.errorTextLocation}`}>{errors.location}</span>}
           </div>
         </div>
 
@@ -243,7 +247,7 @@ const Editor = () => {
               <option value="Выставка">Выставка</option>
               <option value="Другое">Другое</option>
             </select>
-            {errors.category && <span className={style.errorText}>{errors.category}</span>}
+            {errors.category && <span className={`${style.errorText} ${style.errorTextCategory}`}>{errors.category}</span>}
           </div>
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
@@ -254,19 +258,21 @@ const Editor = () => {
               value={formData.price}
               onChange={handleInputChange}
             />
-            {errors.price && <span className={style.errorText}>{errors.price}</span>}
+            {errors.price && <span className={`${style.errorText} ${style.errorTextPrice}`}>{errors.price}</span>}
           </div>
         </div>
 
-        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input
-          type="url"
-          className={errors.photo ? `${style.photo} ${style.inputError}` : style.photo}
-          id="photo"
-          value={formData.photo}
-          onChange={handleInputChange}
-        />
-        {errors.photo && <span className={style.errorText}>{errors.photo}</span>}
+        <div className={style.field}>
+          <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+          <input
+            type="url"
+            className={errors.photo ? `${style.photo} ${style.inputError}` : style.photo}
+            id="photo"
+            value={formData.photo}
+            onChange={handleInputChange}
+          />
+          {errors.photo && <span className={`${style.errorText} ${style.errorTextPhoto}`}>{errors.photo}</span>}
+        </div>
 
         <div className={style.btnwrapper}>
           <button
