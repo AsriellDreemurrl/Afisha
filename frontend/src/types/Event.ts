@@ -1,5 +1,5 @@
 export type AfishaEvent = {
-  id: number
+  id: string
   name: string
   description: string
   datetime: string  
