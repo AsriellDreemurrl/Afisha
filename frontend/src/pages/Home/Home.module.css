@@ -27,6 +27,42 @@
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.pageBtn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f1f5f9d6;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #4d7cfe;
+  color: #4d7cfe;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+}
+
 @media (max-width: 480px) {
   .home {
     padding: 12px;

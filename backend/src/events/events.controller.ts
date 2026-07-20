@@ -17,7 +17,7 @@ export class EventsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.eventsService.findOne(Number(id));
+    return this.eventsService.findOne(id);
   }
 
   @Post()
@@ -27,11 +27,11 @@ export class EventsController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
-    return this.eventsService.update(Number(id), dto);
+    return this.eventsService.update(id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.eventsService.remove(Number(id));
+    return this.eventsService.remove(id);
   }
 }
