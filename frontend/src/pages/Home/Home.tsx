@@ -5,43 +5,51 @@ import axios from "axios";
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 
-//generics, memoization, use .envm standardize, better to make pages always export from components, not components export from pages, make many things global such as * and contanier in css, really don't use variables from back, make interface AfishaEvent global and make everyone use it instead of declaring another one
 import type { AfishaEvent } from "../../types/Event";
-
 import styles from "./Home.module.css";
-
 
 const Home = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [events, setEvents] = useState<AfishaEvent[]>([]);
-  const location = useLocation()
-  const [message, setMessage] = useState<{ text: string, type: string } | null>(null)
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 18;
+
+  const location = useLocation();
+  const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
 
   useEffect(() => {
     if (location.state?.message) {
-      setMessage({ text: location.state.message, type: location.state.type })
-      setTimeout(() => setMessage(null), 2500)
+      setMessage({ text: location.state.message, type: location.state.type });
+      setTimeout(() => setMessage(null), 2500);
     }
-  }, [location.state])
-
+  }, [location.state]);
 
   useEffect(() => {
-    const params: Record<string, string> = {};
+    const params: Record<string, any> = { page, limit };
     if (search) params.search = search;
     if (category) params.category = category;
     if (date) params.date = date;
 
     axios
-      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`, { params })
+      .get(`${import.meta.env.VITE_API_URL}/events`, { params })
       .then((response) => {
-        setEvents(response.data);
+        setEvents(response.data.data);   
+        setTotal(response.data.total);   
       })
       .catch((error) => {
         console.error("Ошибка при получении данных:", error);
       });
+  }, [search, category, date, page]);
+
+  
+  useEffect(() => {
+    setPage(1);
   }, [search, category, date]);
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className={styles.home}>
@@ -58,6 +66,26 @@ const Home = () => {
         events={events}
         onDelete={() => {}}
       />
+
+      {totalPages > 1 && (
+      <div className={styles.pagination}>
+  <button
+    className={styles.pageBtn}
+    disabled={page === 1}
+    onClick={() => setPage(p => p - 1)}
+  >
+    ← Назад
+  </button>
+  <span className={styles.pageInfo}>{page} / {Math.ceil(total / limit)}</span>
+  <button
+    className={styles.pageBtn}
+    disabled={page >= Math.ceil(total / limit)}
+    onClick={() => setPage(p => p + 1)}
+  >
+    Вперёд →
+  </button>
+</div>
+      )}
 
       {message && (
         <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>
