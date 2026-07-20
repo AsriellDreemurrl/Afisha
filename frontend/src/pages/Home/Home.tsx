@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
+import EventList from '../../components/EventList/EventList'
 
 import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
@@ -53,19 +54,7 @@ const Home = () => {
 
   return (
     <div className={styles.home}>
-      <Header
-        search={search}
-        setSearch={setSearch}
-        category={category}
-        setCategory={setCategory}
-        date={date}
-        setDate={setDate}
-      />
-
-      <EventList
-        events={events}
-        onDelete={() => {}}
-      />
+      <EventList events={filteredEvents} onDelete={() => {}} />
 
       {totalPages > 1 && (
       <div className={styles.pagination}>
@@ -93,7 +82,7 @@ const Home = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
