@@ -69,12 +69,12 @@ const Editor = () => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`);
         const event: AfishaEvent = response.data;
 
-        setValue('name', event.name);
-        setValue('description', event.description);
-        setValue('location', event.location);
+        setValue('name', event.name ?? '');
+        setValue('description', event.description ?? '');
+        setValue('location', event.location ?? '');
         setValue('category', event.category as FormInputs['category']);
-        setValue('price', event.price);
-        setValue('photo', event.photo);
+        setValue('price', event.price ?? 0);
+        setValue('photo', event.photo ?? '');
 
         if (event.datetime) {
           const parsed = parseDate(event.datetime);
