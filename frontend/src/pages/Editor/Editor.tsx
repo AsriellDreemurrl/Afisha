@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { AfishaEvent } from '../../types/Event';
 import axios from 'axios';
 import { parseDate } from '../../utils/dateUtils';
+import { createUrl } from '../../utils/url';
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -66,7 +67,7 @@ const Editor = () => {
     if (!id) return;
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`);
+        const response = await axios.get(createUrl(`/events/${id}`));
         const event: AfishaEvent = response.data;
 
         setValue('name', event.name ?? '');
@@ -78,9 +79,7 @@ const Editor = () => {
 
         if (event.datetime) {
           const parsed = parseDate(event.datetime);
-          if (parsed) {
-            setValue('datetime', parsed.toISOString());
-          }
+          if (parsed) setValue('datetime', parsed.toISOString());
         }
       } catch (error) {
         console.error('Ошибка загрузки:', error);
@@ -101,10 +100,10 @@ const Editor = () => {
       };
 
       if (id) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/events/${id}`, payload);
+        await axios.put(createUrl(`/events/${id}`), payload);
         navigate(`/post/${id}`);
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, payload);
+        const response = await axios.post(createUrl('/events'), payload);
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
@@ -120,14 +119,27 @@ const Editor = () => {
 
       {serverError && <div style={{ color: 'red', marginBottom: '16px' }}>{serverError}</div>}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="name" className={style.label}>Название</label>
-        <input type="text" className={style.title} id="name" {...register('name')} />
-        {errors.name && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.name.message}</div>}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className={style.field}>
+          <label htmlFor="name" className={style.label}>Название</label>
+          <input
+            type="text"
+            className={errors.name ? `${style.title} ${style.inputError}` : style.title}
+            id="name"
+            {...register('name')}
+          />
+          {errors.name && <span className={`${style.errorText} ${style.errorTextName}`}>{errors.name.message}</span>}
+        </div>
 
-        <label htmlFor="description" className={style.label}>Описание</label>
-        <textarea className={style.description} id="description" {...register('description')} />
-        {errors.description && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.description.message}</div>}
+        <div className={style.field}>
+          <label htmlFor="description" className={style.label}>Описание</label>
+          <textarea
+            className={errors.description ? `${style.description} ${style.inputError}` : style.description}
+            id="description"
+            {...register('description')}
+          />
+          {errors.description && <span className={`${style.errorText} ${style.errorTextDescription}`}>{errors.description.message}</span>}
+        </div>
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
@@ -143,23 +155,34 @@ const Editor = () => {
                   onChange={(date: Date | null) => field.onChange(date ? date.toISOString() : '')}
                   showTimeSelect
                   dateFormat="Pp"
+                  className={errors.datetime ? style.inputError : ''}
                 />
               )}
             />
-            {errors.datetime && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.datetime.message}</div>}
+            {errors.datetime && <span className={`${style.errorText} ${style.errorTextDatetime}`}>{errors.datetime.message}</span>}
           </div>
 
           <div className={style.input_group}>
             <label htmlFor="location" className={style.label}>Место</label>
-            <input type="text" className={style.aboutinp} id="location" {...register('location')} />
-            {errors.location && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.location.message}</div>}
+            <input
+              type="text"
+              className={errors.location ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
+              id="location"
+              {...register('location')}
+            />
+            {errors.location && <span className={`${style.errorText} ${style.errorTextLocation}`}>{errors.location.message}</span>}
           </div>
         </div>
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
             <label htmlFor="category" className={style.label}>Категория</label>
-            <select className={style.aboutinp} id="category" {...register('category')} defaultValue="">
+            <select
+              className={errors.category ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
+              id="category"
+              defaultValue=""
+              {...register('category')}
+            >
               <option value="" disabled>Выберите</option>
               <option value="Концерт">Концерт</option>
               <option value="Лекция">Лекция</option>
@@ -167,19 +190,31 @@ const Editor = () => {
               <option value="Выставка">Выставка</option>
               <option value="Другое">Другое</option>
             </select>
-            {errors.category && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.category.message}</div>}
+            {errors.category && <span className={`${style.errorText} ${style.errorTextCategory}`}>{errors.category.message}</span>}
           </div>
 
           <div className={style.input_group}>
             <label htmlFor="price" className={style.label}>Цена</label>
-            <input type="number" className={style.aboutinp} id="price" {...register('price')} />
-            {errors.price && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.price.message}</div>}
+            <input
+              type="number"
+              className={errors.price ? `${style.aboutinp} ${style.inputError}` : style.aboutinp}
+              id="price"
+              {...register('price')}
+            />
+            {errors.price && <span className={`${style.errorText} ${style.errorTextPrice}`}>{errors.price.message}</span>}
           </div>
         </div>
 
-        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input type="url" className={style.photo} id="photo" {...register('photo')} />
-        {errors.photo && <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>{errors.photo.message}</div>}
+        <div className={style.field}>
+          <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
+          <input
+            type="url"
+            className={errors.photo ? `${style.photo} ${style.inputError}` : style.photo}
+            id="photo"
+            {...register('photo')}
+          />
+          {errors.photo && <span className={`${style.errorText} ${style.errorTextPhoto}`}>{errors.photo.message}</span>}
+        </div>
 
         <div className={style.btnwrapper}>
           <button type="submit" className={style.btn} disabled={loading}>

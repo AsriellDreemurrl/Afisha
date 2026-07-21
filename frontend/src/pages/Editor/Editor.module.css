@@ -35,9 +35,11 @@
   width: 100%;
   height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--color-border);
-  font-size: var(--font-size-4);
-  background: var(--color-primary);
+  border: 1px solid #ddd;
+  font-size: 15px;
+  background: #f1f5f9d6;
+  box-sizing: border-box;
+  line-height: 38px;
 }
 
 .title:focus {
@@ -75,8 +77,10 @@
   height: 40px;
   border: 1px solid var(--color-border);
   padding: 0 12px;
-  font-size: var(--font-size-3);
-  background: var(--color-primary);
+  font-size: 15px;
+  background: #f1f5f9d6;
+  box-sizing: border-box;
+  line-height: 38px;
 }
 
 .aboutinp:focus {
@@ -90,18 +94,34 @@ select.aboutinp {
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 32px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  line-height: 38px;
+}
+
+.aboutinp_wrapper :global(.react-datepicker-wrapper) {
+  width: 100%;
+  display: block;
+}
+
+.aboutinp_wrapper :global(.react-datepicker__input-container) {
+  width: 100%;
+  display: block;
 }
 
 .aboutinp_wrapper :global(.react-datepicker__input-container input) {
   border-radius: 10px;
   width: 100%;
   height: 40px;
-  border: 0.5px solid var(--color-border);
+  border: 1px solid #ddd;
   padding: 0 12px;
   font-size: var(--font-size-4);
   outline: none;
   box-shadow: none;
-  background: var(--color-primary);
+  background: #f1f5f9d6;
+  box-sizing: border-box;
+  line-height: 38px;
 }
 
 .aboutinp_wrapper :global(.react-datepicker__input-container input:focus) {
@@ -114,6 +134,7 @@ select.aboutinp {
   margin-top: 0;
   width: 100%;
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
@@ -127,7 +148,9 @@ select.aboutinp {
   font-size: var(--font-size-4);
   outline: none;
   box-shadow: none;
-  background: var(--color-primary);
+  background: #f1f5f9d6;
+  box-sizing: border-box;
+  line-height: 38px;
 }
 
 .photo:focus {
@@ -167,4 +190,60 @@ select.aboutinp {
   width: 48%;
   display: flex;
   flex-direction: column;
+}
+
+.field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.inputError {
+  border: 1px solid #e34d4d !important;
+  background: #fdf1f1 !important;
+}
+
+.inputError:focus {
+  border-color: #e34d4d !important;
+  box-shadow: 0 0 0 3px rgba(227, 77, 77, 0.15) !important;
+  background: #fdf1f1 !important;
+}
+
+.errorText {
+  color: #e34d4d;
+  font-size: 12px;
+  padding: 0;
+  line-height: 1.3;
+  display: block;
+}
+
+
+.errorTextName {
+  margin-top: 6px;
+}
+
+.errorTextDescription {
+  margin-top: 25px;
+}
+
+.errorTextDatetime {
+  margin-top: 6px;
+}
+
+.errorTextLocation {
+  margin-top: 6px;
+}
+
+.errorTextCategory {
+  margin-top: 25px;
+}
+
+.errorTextPrice {
+  margin-top: 6px;
+}
+
+.errorTextPhoto {
+  margin-top: 6px;
 }
