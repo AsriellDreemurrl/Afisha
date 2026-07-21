@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 import { useAppContext } from "../../context/AppContext";
 
@@ -59,8 +58,6 @@ const Home = () => {
 
   return (
     <div className={styles.home}>
-      <Header />
-
       <EventList events={events} onDelete={() => {}} />
 
       {totalPages > 1 && (

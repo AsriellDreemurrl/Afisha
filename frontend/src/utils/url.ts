@@ -2,7 +2,7 @@
 
 export type QueryParams = Record<string, string | number | boolean | undefined | null>;
 
-const DEFAULT_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '';
+const DEFAULT_BASE_URL: string = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 
 function buildQueryString(params?: QueryParams): string {
