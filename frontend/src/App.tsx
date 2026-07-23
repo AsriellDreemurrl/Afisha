@@ -1,9 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
-import Home from './pages/Home/Home';
-import Editor from './pages/Editor/Editor';
-import Post from './pages/Post/Post';
 import { AppProvider } from './context/AppContext';
+import Layout from './components/Layout/Layout';
+
+const Home = lazy(() => import('./pages/Home/Home'));
+const Editor = lazy(() => import('./pages/Editor/Editor'));
+const Post = lazy(() => import('./pages/Post/Post'));
 
 
 function App() {
@@ -11,12 +13,14 @@ function App() {
     <BrowserRouter>
       <AppProvider>
         <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/editor" element={<Editor />} />
-            <Route path="/editor/:id" element={<Editor />} />
-            <Route path="/post/:id" element={<Post />} />
-          </Routes>
+          <Suspense fallback={<div>Загрузка...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/editor" element={<Editor />} />
+              <Route path="/editor/:id" element={<Editor />} />
+              <Route path="/post/:id" element={<Post />} />
+            </Routes>
+          </Suspense>
         </Layout>
       </AppProvider>
     </BrowserRouter>
