@@ -4,13 +4,16 @@ export interface PaginatedResponse {
   page: number
   limit: number
 }
+
+export type Category = '' | 'Концерт' | 'Лекция' | 'Спорт' | 'Выставка' | 'Другое';
+
 export interface AfishaEvent {
-  id?: string
-  name: string
-  description: string
-  datetime: string  
-  location: string
-  category: string
-  price: number
-  photo: string
+  id?: number;
+  name: string;
+  description: string;
+  datetime: string;
+  location: string;
+  category: Category;
+  price: number;
+  photo: string;
 }

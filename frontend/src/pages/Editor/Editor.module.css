@@ -126,6 +126,7 @@ select.aboutinp {
 .btnwrapper {
   display: flex;
   margin-top: 28px;
+  gap: 12px;
 }
 
 .btn {

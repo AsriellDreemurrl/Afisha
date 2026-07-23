@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import type { AfishaEvent } from '../../types/Event';
 import { formatDate } from '../../utils/dateUtils';
+import Button from '../../components/Button/Button';
 
 const Post = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +31,7 @@ const Post = () => {
         });
     }
   }, [id]);
+
   if (loading) return <div className={styles.container}>Загрузка...</div>;
   if (!event) return <div className={styles.container}>Событие не найдено</div>;
 
@@ -42,33 +44,22 @@ const Post = () => {
       });
     } catch (error) {
       console.error(error);
-
-      setMessage({
-        type: 'error',
-        text: 'Не удалось удалить событие',
-      });
-      setTimeout(() => {
-        setMessage(null);
-      }, 2500);
+      setMessage({ type: 'error', text: 'Не удалось удалить событие' });
+      setTimeout(() => setMessage(null), 2500);
     }
   };
 
   return (
     <div className={styles.container}>
       {message && (
-        <div
-          className={
-            message.type === 'success'
-              ? styles.successMessage
-              : styles.errorMessage
-          }
-        >
+        <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>
           {message.text}
         </div>
       )}
-      <button className={styles.backButton} onClick={() => navigate('/')}>
+
+      <Button className={styles.backButton} onClick={() => navigate('/')}>
         <span className={styles.backIcon}>←</span> Назад к списку
-      </button>
+      </Button>
 
       <div className={styles.image}>
         <img src={event.photo} alt="Изображение места" />
@@ -82,19 +73,13 @@ const Post = () => {
 
       <div className={styles.info}>
         <div className={styles.infoRow}>
-          <img
-            src="/calendar-icon.svg"
-            alt="icon"
-            className={styles.infoIcon}
-          />
-          <p className={styles.date}>{formatDate(event.datetime)}</p>
+          <img src="/calendar-icon.svg" alt="icon" className={styles.infoIcon} />
+          <p className={styles.date}>{formatDate(event.datetime ?? '')}</p>
         </div>
-
         <div className={styles.infoRow}>
           <img src="/gps-icon.svg" alt="icon" className={styles.infoIcon} />
           <p className={styles.location}>{event.location}</p>
         </div>
-
         <div className={styles.infoRow}>
           <img src="/ticket-icon.svg" alt="icon" className={styles.infoIcon} />
           <p className={styles.price}>{event.price} Сом</p>
@@ -102,21 +87,21 @@ const Post = () => {
       </div>
 
       <div className={styles.actions}>
-        <button
+        <Button
           className={clsx(styles.btnAction, styles.btnEdit)}
           onClick={() => navigate(`/editor/${event.id}`)}
         >
           <img src="/edit-icon.svg" alt="" className={styles.infoIcon} />
           Редактировать
-        </button>
+        </Button>
 
-        <button
+        <Button
           className={clsx(styles.btnAction, styles.btnDelete)}
           onClick={handleDelete}
         >
           <img src="/trash-icon.svg" alt="" className={styles.infoIcon} />
           Удалить
-        </button>
+        </Button>
       </div>
     </div>
   );
