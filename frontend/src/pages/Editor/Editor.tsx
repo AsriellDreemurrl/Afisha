@@ -1,246 +1,264 @@
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import style from "./Editor.module.css"
-import { registerLocale } from 'react-datepicker';
-import { ru } from 'date-fns/locale';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { AfishaEvent } from "../../types/Event";
-import axios from 'axios';
+import style from "./Editor.module.css";
+import { registerLocale } from "react-datepicker";
+import { ru } from "date-fns/locale";
+import { useNavigate, useParams } from "react-router-dom";
+import type { AfishaEvent, Category } from "../../types/Event";
+import axios from "axios";
 import { parseDate } from "../../utils/dateUtils";
+import Decimal from "decimal.js";
 
-registerLocale('ru', ru);
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-interface FormState {
-  name: string;
-  description: string;
-  datetime: string;
-  location: string;
-  category: '' | 'Концерт' | 'Лекция' | 'Спорт' | 'Выставка' | 'Другое';
-  price: string;
-  photo: string;
+import FormInput from "../../components/FormInput/FormInput";
+import FormTextarea from "../../components/FormTextarea/FormTextarea";
+import FormSelect from "../../components/FormSelect/FormSelect";
+import FormDatePicker from "../../components/FormDatePicker/FormDatePicker";
+import Button from "../../components/Button/Button";
+
+registerLocale("ru", ru);
+
+const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
+  { value: "Концерт", label: "Концерт" },
+  { value: "Лекция", label: "Лекция" },
+  { value: "Спорт", label: "Спорт" },
+  { value: "Выставка", label: "Выставка" },
+  { value: "Другое", label: "Другое" },
+];
+
+function checkPrice(value: any) {
+  if (!value || typeof value !== "string") return false;
+  try {
+    const fixedValue = value.replace(",", ".");
+    const decimalNumber = new Decimal(fixedValue);
+    return decimalNumber.greaterThan(0);
+  } catch (e) {
+    return false;
+  }
 }
+
+const schema = yup.object().shape({
+  name: yup.string().required("Название обязательно для заполнения"),
+  description: yup.string().required("Описание обязательно для заполнения"),
+  datetime: yup.string().required("Дата и время обязательны"),
+  location: yup.string().required("Место проведения обязательно"),
+  category: yup
+    .string()
+    .oneOf(
+      ["Концерт", "Лекция", "Спорт", "Выставка", "Другое"],
+      "Выберите корректную категорию",
+    )
+    .required("Категория обязательна"),
+  price: yup
+    .string()
+    .required("Цена обязательна")
+    .test("is-decimal", "Цена должна быть числом больше нуля", checkPrice),
+  photo: yup
+    .string()
+    .url("Введите корректную ссылку на фото")
+    .required("Ссылка на фото обязательна"),
+});
+
+type FormInputs = yup.InferType<typeof schema>;
 
 const Editor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState<FormState>({
-    name: '',
-    description: '',
-    datetime: '',
-    location: '',
-    category: '',
-    price: '',
-    photo: ''
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm<FormInputs>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      description: "",
+      datetime: "",
+      location: "",
+      category: undefined,
+      price: "",
+      photo: "",
+    },
   });
 
   useEffect(() => {
-    if (!id) return
+    if (!id) return;
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`)
-        const event: AfishaEvent = response.data
-        setFormData({
-          name: event.name,
-          description: event.description,
-          datetime: event.datetime,
-          location: event.location,
-          category: event.category as FormState['category'],
-          price: String(event.price),
-          photo: event.photo,
-        })
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+        );
+        const event: AfishaEvent = response.data;
+
+        setValue("name", event.name);
+        setValue("description", event.description);
+        setValue("location", event.location);
+        setValue("category", event.category as FormInputs["category"]);
+        setValue("price", event.price === undefined ? "" : String(event.price));
+        setValue("photo", event.photo);
+        
         if (event.datetime) {
-          const parsed = parseDate(event.datetime)
-          if(parsed) setSelectedDate(parsed)
+          const parsed = parseDate(event.datetime);
+          if (parsed) {
+            setValue("datetime", parsed.toISOString());
+          }
         }
       } catch (error) {
-        console.error('Ошибка загрузки:', error)
+        console.error("Ошибка загрузки:", error);
+        setServerError("Не удалось загрузить данные события");
       }
-    }
-    fetchEvent()
-  }, [id])
+    };
+    fetchEvent();
+  }, [id, setValue]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { id, value } = e.target;
-    const fieldName = id as keyof FormState;
-    setFormData(prev => ({
-      ...prev,
-      [fieldName]: value
-    }));
-  };
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-    if (date instanceof Date) {
-      setFormData(prev => ({
-        ...prev,
-        datetime: date.toISOString()
-      }));
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const priceNumber = Number(formData.price);
-    if (
-      !formData.name ||
-      !formData.description ||
-      !selectedDate ||
-      !formData.location ||
-      !formData.category ||
-      !formData.photo ||
-      formData.price.trim() === '' ||
-      Number.isNaN(priceNumber)
-    ) {
-      setError('Пожалуйста, заполните все поля правильными значениями');
-      return;
-    }
-
+  const onSubmit = async (data: FormInputs) => {
     setLoading(true);
-    setError(null);
+    setServerError(null);
 
     try {
-      const payload: Omit<AfishaEvent, 'id'> = {
-        name: formData.name,
-        description: formData.description,
-        datetime: selectedDate.toISOString(),
-        location: formData.location,
-        category: formData.category,
-        price: priceNumber,
-        photo: formData.photo,
+      const fixedPrice = data.price.replace(",", ".");
+      const priceAsNumber = Number(new Decimal(fixedPrice).toFixed(2));
+
+      const payload: Omit<AfishaEvent, "id"> = {
+        ...data,
+        category: data.category!,
+        price: priceAsNumber,
       };
 
       if (id) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/events/${id}`, payload)
-        navigate(`/post/${id}`)
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+          payload,
+        );
+        navigate(`/post/${id}`);
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, payload);
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/events`,
+          payload,
+        );
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
-      console.error('Error saving event:', err);
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
+      console.error("Error saving event:", err);
+      setServerError(
+        err instanceof Error
+          ? err.message
+          : "Произошла ошибка при сохранении события",
+      );
       setLoading(false);
     }
   };
 
   return (
     <div className={style.container}>
-      <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
+      <h1 className={style.name}>
+        {id ? "Редактировать событие" : "Новое событие"}
+      </h1>
 
-      {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
+      {serverError && (
+        <div style={{ color: "red", marginBottom: "16px" }}>{serverError}</div>
+      )}
 
-      <form onSubmit={handleSave}>
-        <label htmlFor="name" className={style.label}>Название</label>
-        <input
-          type="text"
-          className={style.title}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          label="Название"
           id="name"
-          value={formData.name}
-          onChange={handleInputChange}
-          required
+          error={errors.name?.message}
+          {...register("name")}
         />
 
-        <label htmlFor="description" className={style.label}>Описание</label>
-        <textarea
-          className={style.description}
-          id="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          required
-        />
+        <div style={{ marginTop: 16 }}>
+          <FormTextarea
+            label="Описание"
+            id="description"
+            error={errors.description?.message}
+            {...register("description")}
+          />
+        </div>
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
-            <label htmlFor="datetime" className={style.label}>Дата и время</label>
-            <DatePicker
-              id="datetime"
-              locale="ru"
-              selected={selectedDate}
-              onChange={handleDateChange}
-              showTimeSelect
-              dateFormat="Pp"
-              required
+            <Controller
+              control={control}
+              name="datetime"
+              render={({ field }) => (
+                <FormDatePicker
+                  label="Дата и время"
+                  id="datetime"
+                  value={field.value ? new Date(field.value) : null}
+                  onChange={(date: Date | null) =>
+                    field.onChange(date ? date.toISOString() : "")
+                  }
+                  showTimeSelect
+                  dateFormat="Pp"
+                  error={errors.datetime?.message}
+                />
+              )}
             />
           </div>
+
           <div className={style.input_group}>
-            <label htmlFor="location" className={style.label}>Место</label>
-            <input
-              type="text"
-              className={style.aboutinp}
+            <FormInput
+              label="Место"
               id="location"
-              value={formData.location}
-              onChange={handleInputChange}
-              required
+              error={errors.location?.message}
+              {...register("location")}
             />
           </div>
         </div>
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
-            <label htmlFor="category" className={style.label}>Категория</label>
-            <select
-              className={style.aboutinp}
+            <FormSelect
+              label="Категория"
               id="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="" disabled>Выберите</option>
-              <option value="Концерт">Концерт</option>
-              <option value="Лекция">Лекция</option>
-              <option value="Спорт">Спорт</option>
-              <option value="Выставка">Выставка</option>
-              <option value="Другое">Другое</option>
-            </select>
+              options={CATEGORY_OPTIONS}
+              placeholder="Выберите"
+              error={errors.category?.message}
+              {...register("category")}
+            />
           </div>
+
           <div className={style.input_group}>
-            <label htmlFor="price" className={style.label}>Цена</label>
-            <input
-              type="number"
-              className={style.aboutinp}
+            <FormInput
+              label="Цена"
               id="price"
-              value={formData.price}
-              onChange={handleInputChange}
-              required
+              type="text"
+              error={errors.price?.message}
+              {...register("price")}
             />
           </div>
         </div>
 
-        <label htmlFor="photo" className={style.label}>Ссылка на фото</label>
-        <input
-          type="url"
-          className={style.photo}
-          id="photo"
-          value={formData.photo}
-          onChange={handleInputChange}
-          required
-        />
+        <div style={{ marginTop: 16 }}>
+          <FormInput
+            label="Ссылка на фото"
+            id="photo"
+            type="url"
+            error={errors.photo?.message}
+            {...register("photo")}
+          />
+        </div>
 
         <div className={style.btnwrapper}>
-          <button
-            type="submit"
-            className={style.btn}
-            disabled={loading}
-          >
-            {loading ? 'Сохранение...' : 'Сохранить'}
-          </button>
-          <button
-            type="button"
-            className={style.btn}
-            onClick={() => navigate(-1)}
-          >
+          <Button type="submit" className={style.btn} disabled={loading}>
+            {loading ? "Сохранение..." : "Сохранить"}
+          </Button>
+          <Button className={style.btn} onClick={() => navigate(-1)}>
             Отмена
-          </button>
+          </Button>
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;
