@@ -1,5 +1,11 @@
-export type AfishaEvent = {
-  id: string
+export interface PaginatedResponse {
+  data: AfishaEvent[]
+  total: number
+  page: number
+  limit: number
+}
+export interface AfishaEvent {
+  id?: string
   name: string
   description: string
   datetime: string  

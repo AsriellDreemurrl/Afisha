@@ -6,7 +6,7 @@ import Header from "../../components/Header/Header";
 import EventList from "../../components/EventList/EventList";
 
 //generics, memoization, use .envm standardize, better to make pages always export from components, not components export from pages, make many things global such as * and contanier in css, really don't use variables from back, make interface AfishaEvent global and make everyone use it instead of declaring another one
-import type { AfishaEvent } from "../../types/Event";
+import type { AfishaEvent, PaginatedResponse } from "../../types/Event";
 
 import styles from "./Home.module.css";
 
@@ -34,9 +34,9 @@ const Home = () => {
     if (date) params.date = date;
 
     axios
-      .get<AfishaEvent[]>(`${import.meta.env.VITE_API_URL}/events`, { params })
+      .get<PaginatedResponse>(`${import.meta.env.VITE_API_URL}/events`, { params })
       .then((response) => {
-        setEvents(response.data);
+        setEvents(response.data.data);
       })
       .catch((error) => {
         console.error("Ошибка при получении данных:", error);
