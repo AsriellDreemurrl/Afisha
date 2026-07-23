@@ -13,7 +13,7 @@ export class EventsService {
     private eventsRepository: Repository<EventEntity>,
   ) {}
 
-   async findAll(filterDto: FilterEventDto): Promise<EventEntity[]> {
+   async findAll(filterDto: FilterEventDto): Promise<{ data:EventEntity[], total:number, page:number, limit:number }>  {
     const where: any = {};
     if (filterDto.search) {
       where.name = ILike(`%${filterDto.search}%`);
@@ -21,7 +21,16 @@ export class EventsService {
     if (filterDto.category) {
       where.category = filterDto.category;
     }
-    return this.eventsRepository.find({where});
+    const page = filterDto.page || 1;
+    const limit = filterDto.limit || 18;
+
+    const [data, total] = await this.eventsRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return { data, total, page, limit };
+
   }
 
   async findOne(id: string): Promise<EventEntity> {

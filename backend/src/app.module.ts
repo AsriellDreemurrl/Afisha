@@ -6,20 +6,25 @@ import { EventEntity } from './events/events.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-   TypeOrmModule.forRootAsync({
+  ConfigModule.forRoot({ isGlobal: true }),
+  TypeOrmModule.forRootAsync({
   imports: [ConfigModule],
   inject: [ConfigService],
-  useFactory: (config: ConfigService) => ({
-    type: 'postgres',
+  useFactory: (config: ConfigService) => {
+  const dbConfig = {
     host: config.get('DB_HOST'),
-    port: config.get<number>('DB_PORT'),
+    port: config.get('DB_PORT'),
     username: config.get('DB_USERNAME'),
-    password: config.get('DB_PASSWORD'),
     database: config.get('DB_NAME'),
-    entities: [EventEntity], 
+  };
+  return {
+    type: 'postgres' as const,
+    ...dbConfig,
+    password: config.get('DB_PASSWORD'),
+    entities: [EventEntity],
     synchronize: true,
-  }),
+  };
+},
 }),
     EventsModule,
   ],
