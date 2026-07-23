@@ -30,7 +30,7 @@ const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
 ];
 
 function checkPrice(value: any) {
-  if (!value) return false;
+  if (!value || typeof value !== 'string') return false;
   try {
     const fixedValue = value.replace(',', '.');
     const decimalNumber = new Decimal(fixedValue);
