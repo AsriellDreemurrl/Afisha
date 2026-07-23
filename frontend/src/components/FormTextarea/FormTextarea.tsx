@@ -6,11 +6,11 @@ function FormTextarea({ label, id, error, className, style, ...rest }: any) {
       {label && <label htmlFor={id} className={styles.label}>{label}</label>}
       <textarea
         id={id}
-        className={className ? `${styles.textarea} ${className}` : styles.textarea}
+        className={`${styles.textarea} ${error ? styles.textareaError : ""} ${className || ""}`}
         style={style}
         {...rest}
       />
-      {error && <div className={styles.errorText}>{error}</div>}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 }

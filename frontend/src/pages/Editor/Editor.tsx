@@ -104,7 +104,7 @@ const Editor = () => {
         setValue("category", event.category as FormInputs["category"]);
         setValue("price", event.price === undefined ? "" : String(event.price));
         setValue("photo", event.photo);
-        
+
         if (event.datetime) {
           const parsed = parseDate(event.datetime);
           if (parsed) {
@@ -164,7 +164,7 @@ const Editor = () => {
       </h1>
 
       {serverError && (
-        <div style={{ color: "red", marginBottom: "16px" }}>{serverError}</div>
+        <div style={{ color: "red", marginBottom: "4px" }}>{serverError}</div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -175,14 +175,12 @@ const Editor = () => {
           {...register("name")}
         />
 
-        <div style={{ marginTop: 16 }}>
-          <FormTextarea
-            label="Описание"
-            id="description"
-            error={errors.description?.message}
-            {...register("description")}
-          />
-        </div>
+        <FormTextarea
+          label="Описание"
+          id="description"
+          error={errors.description?.message}
+          {...register("description")}
+        />
 
         <div className={style.aboutinp_wrapper}>
           <div className={style.input_group}>
@@ -204,7 +202,6 @@ const Editor = () => {
               )}
             />
           </div>
-
           <div className={style.input_group}>
             <FormInput
               label="Место"
@@ -226,7 +223,6 @@ const Editor = () => {
               {...register("category")}
             />
           </div>
-
           <div className={style.input_group}>
             <FormInput
               label="Цена"
@@ -238,15 +234,13 @@ const Editor = () => {
           </div>
         </div>
 
-        <div style={{ marginTop: 16 }}>
-          <FormInput
-            label="Ссылка на фото"
-            id="photo"
-            type="url"
-            error={errors.photo?.message}
-            {...register("photo")}
-          />
-        </div>
+        <FormInput
+          label="Ссылка на фото"
+          id="photo"
+          type="url"
+          error={errors.photo?.message}
+          {...register("photo")}
+        />
 
         <div className={style.btnwrapper}>
           <Button type="submit" className={style.btn} disabled={loading}>

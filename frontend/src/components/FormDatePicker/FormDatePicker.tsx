@@ -8,7 +8,7 @@ function FormDatePicker({
   return (
     <div className={styles.wrapper}>
       {label && <label htmlFor={id} className={styles.label}>{label}</label>}
-      <div className={styles.dateBox}>
+      <div className={`${styles.dateBox} ${error ? styles.dateBoxError : ""}`}>
         <DatePicker
           id={id}
           locale="ru"
@@ -21,7 +21,7 @@ function FormDatePicker({
           popperPlacement="bottom-start"
         />
       </div>
-      {error && <div className={styles.errorText}>{error}</div>}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 }

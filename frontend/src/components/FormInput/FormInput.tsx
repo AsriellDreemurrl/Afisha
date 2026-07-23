@@ -9,16 +9,12 @@ function FormInput({ label, id, type, error, className, style, icon, ...rest }: 
         <input
           type={type || "text"}
           id={id}
-          className={
-            icon
-              ? `${styles.input} ${styles.withIcon} ${className || ""}`
-              : `${styles.input} ${className || ""}`
-          }
+          className={`${styles.input} ${icon ? styles.withIcon : ""} ${error ? styles.inputError : ""} ${className || ""}`}
           style={style}
           {...rest}
         />
       </div>
-      {error && <div className={styles.errorText}>{error}</div>}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 }

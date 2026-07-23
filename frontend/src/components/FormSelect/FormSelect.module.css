@@ -60,5 +60,11 @@
   color: #e34d4d;
   font-size: 12px;
   margin-top: 4px;
+  margin-bottom: 0;
   display: block;
+}
+
+.selectError {
+  border: 1px solid #e34d4d;
+  background: #fdf1f1;
 }

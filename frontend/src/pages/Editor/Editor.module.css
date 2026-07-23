@@ -41,7 +41,6 @@
 }
 
 .aboutinp_wrapper {
-  margin-top: 16px;
   width: 100%;
   display: flex;
   align-items: flex-start;
@@ -149,4 +148,10 @@ select.aboutinp {
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

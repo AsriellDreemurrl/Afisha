@@ -9,7 +9,7 @@ function FormSelect({ label, id, options, error, className, style, placeholder, 
       <div className={styles.selectBox}>
         <select
           id={id}
-          className={className ? `${styles.select} ${className}` : styles.select}
+          className={`${styles.select} ${error ? styles.selectError : ""} ${className || ""}`}
           style={style}
           {...valueProps}
           {...rest}
@@ -20,7 +20,7 @@ function FormSelect({ label, id, options, error, className, style, placeholder, 
           ))}
         </select>
       </div>
-      {error && <div className={styles.errorText}>{error}</div>}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 }

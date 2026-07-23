@@ -53,6 +53,17 @@
 .errorText {
   color: #e34d4d;
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: -12px;
+  margin-bottom: 0;
   display: block;
+}
+
+.inputError {
+  border: 1px solid #e34d4d;
+  background: #fdf1f1;
+}
+
+.inputError:focus {
+  border-color: #e34d4d;
+  box-shadow: 0 0 0 3px rgba(227, 77, 77, 0.15);
 }
