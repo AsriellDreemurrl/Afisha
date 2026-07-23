@@ -46,7 +46,7 @@
   content: '';
   position: absolute;
   right: 12px;
-  top: 50%;
+  top: 35%;
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
@@ -97,4 +97,25 @@
 
 :global(.react-datepicker__header--time) {
   height: auto;
+}
+
+.dateBox :global(.react-datepicker__close-icon) {
+  height: 40px;
+  top: 0;
+  right: 8px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.dateBox :global(.react-datepicker__close-icon::after) {
+  background-color: #999;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
 }
