@@ -11,12 +11,16 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.18.0",
+    "decimal.js": "^10.6.0",
+    "prettier-eslint": "^17.1.1",
     "react": "^19.2.6",
     "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.82.0",
     "react-router-dom": "^7.17.0",
+    "uuid": "^14.0.1",
     "yup": "^1.7.1"
   },
   "devDependencies": {
