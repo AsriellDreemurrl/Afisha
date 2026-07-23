@@ -4,15 +4,10 @@ import axios from "axios";
 
 import EventList from "../../components/EventList/EventList";
 import { useAppContext } from "../../context/AppContext";
-
-import type { AfishaEvent } from "../../types/Event";
+import type { AfishaEvent, PaginatedResponse } from "../../types/Event";
 import { createUrl } from "../../utils/url";
-import styles from "./Home.module.css";
 
-interface EventsResponse {
-  data: AfishaEvent[];
-  total: number;
-}
+import styles from "./Home.module.css";
 
 const Home = () => {
   const { search, category, date } = useAppContext();
@@ -44,7 +39,7 @@ const Home = () => {
     if (date) params.date = date;
 
     axios
-      .get<EventsResponse>(createUrl("/events"), { params })
+      .get<PaginatedResponse>(createUrl("/events"), { params })
       .then((response) => {
         setEvents(response.data.data || []);
         setTotal(response.data.total || 0);
@@ -85,13 +80,7 @@ const Home = () => {
       )}
 
       {message && (
-        <div
-          className={
-            message.type === "success"
-              ? styles.successMessage
-              : styles.errorMessage
-          }
-        >
+        <div className={message.type === "success" ? styles.successMessage : styles.errorMessage}>
           {message.text}
         </div>
       )}
