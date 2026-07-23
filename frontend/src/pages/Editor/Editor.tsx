@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import style from "./Editor.module.css";
-import { registerLocale } from 'react-datepicker';
-import { ru } from 'date-fns/locale';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { AfishaEvent, Category } from '../../types/Event';
-import axios from 'axios';
-import { parseDate } from '../../utils/dateUtils';
+import { registerLocale } from "react-datepicker";
+import { ru } from "date-fns/locale";
+import { useNavigate, useParams } from "react-router-dom";
+import type { AfishaEvent, Category } from "../../types/Event";
+import axios from "axios";
+import { parseDate } from "../../utils/dateUtils";
 import Decimal from "decimal.js";
 
 import { useForm, Controller } from "react-hook-form";
@@ -19,20 +19,20 @@ import FormSelect from "../../components/FormSelect/FormSelect";
 import FormDatePicker from "../../components/FormDatePicker/FormDatePicker";
 import Button from "../../components/Button/Button";
 
-registerLocale('ru', ru);
+registerLocale("ru", ru);
 
 const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
-  { value: 'Концерт', label: 'Концерт' },
-  { value: 'Лекция', label: 'Лекция' },
-  { value: 'Спорт', label: 'Спорт' },
-  { value: 'Выставка', label: 'Выставка' },
-  { value: 'Другое', label: 'Другое' },
+  { value: "Концерт", label: "Концерт" },
+  { value: "Лекция", label: "Лекция" },
+  { value: "Спорт", label: "Спорт" },
+  { value: "Выставка", label: "Выставка" },
+  { value: "Другое", label: "Другое" },
 ];
 
 function checkPrice(value: any) {
-  if (!value || typeof value !== 'string') return false;
+  if (!value || typeof value !== "string") return false;
   try {
-    const fixedValue = value.replace(',', '.');
+    const fixedValue = value.replace(",", ".");
     const decimalNumber = new Decimal(fixedValue);
     return decimalNumber.greaterThan(0);
   } catch (e) {
@@ -41,19 +41,25 @@ function checkPrice(value: any) {
 }
 
 const schema = yup.object().shape({
-  name: yup.string().required('Название обязательно для заполнения'),
-  description: yup.string().required('Описание обязательно для заполнения'),
-  datetime: yup.string().required('Дата и время обязательны'),
-  location: yup.string().required('Место проведения обязательно'),
+  name: yup.string().required("Название обязательно для заполнения"),
+  description: yup.string().required("Описание обязательно для заполнения"),
+  datetime: yup.string().required("Дата и время обязательны"),
+  location: yup.string().required("Место проведения обязательно"),
   category: yup
     .string()
-    .oneOf(['Концерт', 'Лекция', 'Спорт', 'Выставка', 'Другое'], 'Выберите корректную категорию')
-    .required('Категория обязательна'),
+    .oneOf(
+      ["Концерт", "Лекция", "Спорт", "Выставка", "Другое"],
+      "Выберите корректную категорию",
+    )
+    .required("Категория обязательна"),
   price: yup
     .string()
-    .required('Цена обязательна')
-    .test('is-decimal', 'Цена должна быть числом больше нуля', checkPrice),
-  photo: yup.string().url('Введите корректную ссылку на фото').required('Ссылка на фото обязательна'),
+    .required("Цена обязательна")
+    .test("is-decimal", "Цена должна быть числом больше нуля", checkPrice),
+  photo: yup
+    .string()
+    .url("Введите корректную ссылку на фото")
+    .required("Ссылка на фото обязательна"),
 });
 
 type FormInputs = yup.InferType<typeof schema>;
@@ -69,43 +75,45 @@ const Editor = () => {
     handleSubmit,
     control,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormInputs>({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
-      description: '',
-      datetime: '',
-      location: '',
+      name: "",
+      description: "",
+      datetime: "",
+      location: "",
       category: undefined,
-      price: '',
-      photo: ''
-    }
+      price: "",
+      photo: "",
+    },
   });
 
   useEffect(() => {
     if (!id) return;
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+        );
         const event: AfishaEvent = response.data;
 
-        setValue('name', event.name ?? '');
-        setValue('description', event.description ?? '');
-        setValue('location', event.location ?? '');
-        setValue('category', event.category as FormInputs['category']);
-        setValue('price', event.price === undefined ? '' : String(event.price));
-        setValue('photo', event.photo ?? '');
-
+        setValue("name", event.name);
+        setValue("description", event.description);
+        setValue("location", event.location);
+        setValue("category", event.category as FormInputs["category"]);
+        setValue("price", event.price === undefined ? "" : String(event.price));
+        setValue("photo", event.photo);
+        
         if (event.datetime) {
           const parsed = parseDate(event.datetime);
           if (parsed) {
-            setValue('datetime', parsed.toISOString());
+            setValue("datetime", parsed.toISOString());
           }
         }
       } catch (error) {
-        console.error('Ошибка загрузки:', error);
-        setServerError('Не удалось загрузить данные события');
+        console.error("Ошибка загрузки:", error);
+        setServerError("Не удалось загрузить данные события");
       }
     };
     fetchEvent();
@@ -116,42 +124,55 @@ const Editor = () => {
     setServerError(null);
 
     try {
-      const fixedPrice = data.price.replace(',', '.');
+      const fixedPrice = data.price.replace(",", ".");
       const priceAsNumber = Number(new Decimal(fixedPrice).toFixed(2));
 
-      const payload: Omit<AfishaEvent, 'id'> = {
+      const payload: Omit<AfishaEvent, "id"> = {
         ...data,
         category: data.category!,
         price: priceAsNumber,
       };
 
       if (id) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/events/${id}`, payload);
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/events/${id}`,
+          payload,
+        );
         navigate(`/post/${id}`);
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, payload);
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/events`,
+          payload,
+        );
         navigate(`/post/${response.data.id}`);
       }
     } catch (err) {
-      console.error('Error saving event:', err);
-      setServerError(err instanceof Error ? err.message : 'Произошла ошибка при сохранении события');
+      console.error("Error saving event:", err);
+      setServerError(
+        err instanceof Error
+          ? err.message
+          : "Произошла ошибка при сохранении события",
+      );
       setLoading(false);
     }
   };
 
   return (
     <div className={style.container}>
-      <h1 className={style.name}>{id ? 'Редактировать событие' : 'Новое событие'}</h1>
+      <h1 className={style.name}>
+        {id ? "Редактировать событие" : "Новое событие"}
+      </h1>
 
-      {serverError && <div style={{ color: 'red', marginBottom: '16px' }}>{serverError}</div>}
+      {serverError && (
+        <div style={{ color: "red", marginBottom: "16px" }}>{serverError}</div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-
         <FormInput
           label="Название"
           id="name"
           error={errors.name?.message}
-          {...register('name')}
+          {...register("name")}
         />
 
         <div style={{ marginTop: 16 }}>
@@ -159,7 +180,7 @@ const Editor = () => {
             label="Описание"
             id="description"
             error={errors.description?.message}
-            {...register('description')}
+            {...register("description")}
           />
         </div>
 
@@ -173,7 +194,9 @@ const Editor = () => {
                   label="Дата и время"
                   id="datetime"
                   value={field.value ? new Date(field.value) : null}
-                  onChange={(date: Date | null) => field.onChange(date ? date.toISOString() : '')}
+                  onChange={(date: Date | null) =>
+                    field.onChange(date ? date.toISOString() : "")
+                  }
                   showTimeSelect
                   dateFormat="Pp"
                   error={errors.datetime?.message}
@@ -187,7 +210,7 @@ const Editor = () => {
               label="Место"
               id="location"
               error={errors.location?.message}
-              {...register('location')}
+              {...register("location")}
             />
           </div>
         </div>
@@ -200,7 +223,7 @@ const Editor = () => {
               options={CATEGORY_OPTIONS}
               placeholder="Выберите"
               error={errors.category?.message}
-              {...register('category')}
+              {...register("category")}
             />
           </div>
 
@@ -210,7 +233,7 @@ const Editor = () => {
               id="price"
               type="text"
               error={errors.price?.message}
-              {...register('price')}
+              {...register("price")}
             />
           </div>
         </div>
@@ -221,13 +244,13 @@ const Editor = () => {
             id="photo"
             type="url"
             error={errors.photo?.message}
-            {...register('photo')}
+            {...register("photo")}
           />
         </div>
 
         <div className={style.btnwrapper}>
           <Button type="submit" className={style.btn} disabled={loading}>
-            {loading ? 'Сохранение...' : 'Сохранить'}
+            {loading ? "Сохранение..." : "Сохранить"}
           </Button>
           <Button className={style.btn} onClick={() => navigate(-1)}>
             Отмена

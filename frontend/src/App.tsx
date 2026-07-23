@@ -5,6 +5,7 @@ import Editor from './pages/Editor/Editor';
 import Post from './pages/Post/Post';
 import { AppProvider } from './context/AppContext';
 
+
 function App() {
   return (
     <BrowserRouter>
